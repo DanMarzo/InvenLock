@@ -15,7 +15,6 @@ public class Equipamento
     public string DescEquipamento { get; set; }
     [JsonIgnore]
     public ICollection<ConsertoEquip>? ConsertoEquips { get; set; }
-    
     public string FuncionarioId { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }

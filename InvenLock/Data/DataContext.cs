@@ -15,6 +15,7 @@ public class DataContext : DbContext
     public DbSet<SucataEquip> SucataEquips { get; set; }
     public DbSet<Funcionario> Funcionarios { get; set; }
     public DbSet<HistoricoEmpresEquip> HistoricoEmpresEquips { get; set; }
+    public DbSet<ContatoFuncionario> ContatoFuncionarios { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         /*
@@ -37,6 +38,9 @@ public class DataContext : DbContext
         
         modelBuilder.Entity<HistoricoEmpresEquip>()
             .HasKey(key => key.HistoricoEmpresEquipId);
+
+        modelBuilder.Entity<ContatoFuncionario>()
+            .HasKey(key => key.FuncionarioId);
 
         /*
          * Chaves FOREIGN KEY
@@ -62,6 +66,10 @@ public class DataContext : DbContext
             .HasOne<Funcionario>(many => many.Funcionario)
                 .WithMany(his => his.historicoEmpresEquips)
                     .HasForeignKey(fk => fk.FuncionarioId);
+        modelBuilder.Entity<ContatoFuncionario>()
+            .HasOne<Funcionario>(one => one.Funcionario)
+                .WithOne(ct => ct.ContatoFuncionario)
+                    .HasForeignKey<ContatoFuncionario>(fk => fk.FuncionarioId);
         /*
          * Atributos com DATA
          */
@@ -162,5 +170,17 @@ public class DataContext : DbContext
             .Property(p => p.SobreNomeFuncionario)
                 .HasColumnType("varchar(60)")
                     .IsRequired();
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(tipo => tipo.Celular)
+                .HasColumnType("varchar(11)");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(tipo => tipo.CelularCorp)
+                .HasColumnType("varchar(11)");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(tipo => tipo.Email)
+                .HasColumnType("varchar(60)");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(tipo => tipo.EmailCorp)
+                .HasColumnType("varchar(60)");
     }
 }
