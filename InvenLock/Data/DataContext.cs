@@ -14,6 +14,7 @@ public class DataContext : DbContext
     public DbSet<Ocorrencia> Ocorrencias { get; set; }
     public DbSet<SucataEquip> SucataEquips { get; set; }
     public DbSet<Funcionario> Funcionarios { get; set; }
+    public DbSet<HistoricoEmpresEquip> HistoricoEmpresEquips { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         /*
@@ -33,6 +34,9 @@ public class DataContext : DbContext
 
         modelBuilder.Entity<Funcionario>()
             .HasKey(key => key.FuncionarioId);
+        
+        modelBuilder.Entity<HistoricoEmpresEquip>()
+            .HasKey(key => key.HistoricoEmpresEquipId);
 
         /*
          * Chaves FOREIGN KEY
@@ -54,7 +58,10 @@ public class DataContext : DbContext
             .HasMany<Equipamento>(eq => eq.Equipamentos)
                 .WithOne(one => one.Funcionario)
                     .HasForeignKey(fk => fk.EquipamentoId);
-
+        modelBuilder.Entity<HistoricoEmpresEquip>()
+            .HasOne<Funcionario>(many => many.Funcionario)
+                .WithMany(his => his.historicoEmpresEquips)
+                    .HasForeignKey(fk => fk.FuncionarioId);
         /*
          * Atributos com DATA
          */
@@ -80,6 +87,13 @@ public class DataContext : DbContext
                         .IsRequired();
         modelBuilder.Entity<Funcionario>()
             .Property(dt => dt.DataDemissao)
+                .HasColumnType("smalldatetime");
+        modelBuilder.Entity<HistoricoEmpresEquip>()
+            .Property(dt => dt.DataEmprestimo)
+                .HasColumnType("smalldatetime")
+                    .HasDefaultValueSql("GETDATE()");
+        modelBuilder.Entity<HistoricoEmpresEquip>()
+            .Property(dt => dt.DateDevolucao)
                 .HasColumnType("smalldatetime");
         /*
          * PRIMARY KEYs is required
@@ -148,6 +162,5 @@ public class DataContext : DbContext
             .Property(p => p.SobreNomeFuncionario)
                 .HasColumnType("varchar(60)")
                     .IsRequired();
-        
     }
 }
