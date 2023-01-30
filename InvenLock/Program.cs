@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
 using InvenLock.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -9,7 +12,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 // Add services to the container.
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles );
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,5 +32,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", async () => "Bem vindo à InvenLock".ToString());
 
 app.Run();
