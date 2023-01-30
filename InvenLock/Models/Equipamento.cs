@@ -14,7 +14,9 @@ public class Equipamento
     public TipoEquip TipoEquip { get; set; }
     public string DescEquipamento { get; set; }
     [JsonIgnore]
-    public ICollection<ConsertoEquip>? ConsertoEquips { get; set; }
+    public ICollection<ConsertoEquip> ConsertoEquips { get; set; }
+
+    [Column(TypeName ="varchar(40)")]
     public string FuncionarioId { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }
