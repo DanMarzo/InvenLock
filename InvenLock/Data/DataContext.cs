@@ -77,7 +77,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<EnderecoFuncionario>()
             .HasOne<Funcionario>(one => one.Funcionario)
                 .WithOne(ct => ct.EnderecoFuncionario)
-                    .HasForeignKey<ContatoFuncionario>(fk => fk.FuncionarioId);
+                    .HasForeignKey<EnderecoFuncionario>(fk => fk.FuncionarioId);
         /*
          * Atributos com DATA
          */
@@ -115,12 +115,15 @@ public class DataContext : DbContext
             .Property(dt => dt.DataUltimaAtualizacao)
                 .HasColumnType("smalldatetime")
                     .HasDefaultValueSql("GETDATE()");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(dt => dt.DataUltimaAtualizacao)
+                .HasDefaultValueSql("GETDATE()");
         
         /*
          * PRIMARY KEYs is required
          */
 
-        modelBuilder.Entity<Ocorrencia>()
+        /*modelBuilder.Entity<Ocorrencia>()
             .Property(key => key.OcorrenciaId)
                 .IsRequired();
         modelBuilder.Entity<Equipamento>()
@@ -129,7 +132,8 @@ public class DataContext : DbContext
         modelBuilder.Entity<ConsertoEquip>()
             .Property(key => key.ConsertoEquipId)
                 .IsRequired();
-
+        */
+        
         /*
          * Atributos com DEFAULT
          */
