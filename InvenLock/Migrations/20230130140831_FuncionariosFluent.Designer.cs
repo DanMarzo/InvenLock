@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvenLock.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230130020720_AjustandoRestricoesTresEntidades")]
-    partial class AjustandoRestricoesTresEntidades
+    [Migration("20230130140831_FuncionariosFluent")]
+    partial class FuncionariosFluent
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,17 +33,15 @@ namespace InvenLock.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConsertoEquipId"));
 
-                    b.Property<string>("DescProblema")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EquipamentoId")
-                        .IsRequired()
                         .HasColumnType("varchar(40)");
 
                     b.Property<string>("OcorrenciaId")
-                        .IsRequired()
                         .HasColumnType("varchar(40)");
+
+                    b.Property<string>("Procedimentos")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("SituacaoConserto")
                         .ValueGeneratedOnAdd()
@@ -55,7 +53,8 @@ namespace InvenLock.Migrations
                     b.HasIndex("EquipamentoId");
 
                     b.HasIndex("OcorrenciaId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[OcorrenciaId] IS NOT NULL");
 
                     b.ToTable("ConsertoEquip");
                 });
@@ -68,10 +67,11 @@ namespace InvenLock.Migrations
                     b.Property<DateTime>("DataEntrega")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("smalldatetime")
-                        .HasDefaultValue(new DateTime(2023, 1, 29, 23, 7, 20, 792, DateTimeKind.Local).AddTicks(7556));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("DescEquipamento")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("SituacaoEquip")
                         .ValueGeneratedOnAdd()
@@ -86,6 +86,42 @@ namespace InvenLock.Migrations
                     b.ToTable("Equipamentos");
                 });
 
+            modelBuilder.Entity("InvenLock.Models.Funcionario", b =>
+                {
+                    b.Property<string>("FuncionarioId")
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<DateTime>("DataAdmissao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smalldatetime")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime>("DataDemissao")
+                        .HasColumnType("smalldatetime");
+
+                    b.Property<string>("EquipamentoId")
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<string>("FuncionarioCPF")
+                        .IsRequired()
+                        .HasColumnType("varchar(11)");
+
+                    b.Property<int>("FuncionarioCargo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NomeFuncionario")
+                        .IsRequired()
+                        .HasColumnType("varchar(60)");
+
+                    b.Property<string>("SobreNomeFuncionario")
+                        .IsRequired()
+                        .HasColumnType("varchar(60)");
+
+                    b.HasKey("FuncionarioId");
+
+                    b.ToTable("Funcionarios");
+                });
+
             modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
                 {
                     b.Property<string>("OcorrenciaId")
@@ -97,18 +133,18 @@ namespace InvenLock.Migrations
                     b.Property<DateTime>("DataOcorrencia")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("smalldatetime")
-                        .HasDefaultValue(new DateTime(2023, 1, 29, 23, 7, 20, 792, DateTimeKind.Local).AddTicks(7092));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("DescOcorrencia")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("FuncionarioCPF")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FuncionarioId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SituacaoConserto")
@@ -121,19 +157,44 @@ namespace InvenLock.Migrations
                     b.ToTable("Ocorrencias");
                 });
 
+            modelBuilder.Entity("InvenLock.Models.SucataEquip", b =>
+                {
+                    b.Property<int>("SucataEquipId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SucataEquipId"));
+
+                    b.Property<int>("ConsertoEquipId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataDescarte")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smalldatetime")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("DescMotivo")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("SucataEquipId");
+
+                    b.HasIndex("ConsertoEquipId")
+                        .IsUnique();
+
+                    b.ToTable("SucataEquips");
+                });
+
             modelBuilder.Entity("InvenLock.Models.ConsertoEquip", b =>
                 {
                     b.HasOne("InvenLock.Models.Equipamento", "Equipamento")
                         .WithMany("ConsertoEquips")
-                        .HasForeignKey("EquipamentoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EquipamentoId");
 
                     b.HasOne("InvenLock.Models.Ocorrencia", "Ocorrencia")
                         .WithOne("ConsertoEquip")
-                        .HasForeignKey("InvenLock.Models.ConsertoEquip", "OcorrenciaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InvenLock.Models.ConsertoEquip", "OcorrenciaId");
 
                     b.Navigation("Equipamento");
 
@@ -142,13 +203,44 @@ namespace InvenLock.Migrations
 
             modelBuilder.Entity("InvenLock.Models.Equipamento", b =>
                 {
+                    b.HasOne("InvenLock.Models.Funcionario", "Funcionario")
+                        .WithMany("Equipamentos")
+                        .HasForeignKey("EquipamentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Funcionario");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.SucataEquip", b =>
+                {
+                    b.HasOne("InvenLock.Models.ConsertoEquip", "ConsertoEquip")
+                        .WithOne("SucataEquip")
+                        .HasForeignKey("InvenLock.Models.SucataEquip", "ConsertoEquipId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ConsertoEquip");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.ConsertoEquip", b =>
+                {
+                    b.Navigation("SucataEquip");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.Equipamento", b =>
+                {
                     b.Navigation("ConsertoEquips");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.Funcionario", b =>
+                {
+                    b.Navigation("Equipamentos");
                 });
 
             modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
                 {
-                    b.Navigation("ConsertoEquip")
-                        .IsRequired();
+                    b.Navigation("ConsertoEquip");
                 });
 #pragma warning restore 612, 618
         }

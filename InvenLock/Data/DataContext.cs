@@ -13,6 +13,7 @@ public class DataContext : DbContext
     public DbSet<ConsertoEquip> ConsertoEquip { get; set; }
     public DbSet<Ocorrencia> Ocorrencias { get; set; }
     public DbSet<SucataEquip> SucataEquips { get; set; }
+    public DbSet<Funcionario> Funcionarios { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         /*
@@ -30,6 +31,8 @@ public class DataContext : DbContext
         modelBuilder.Entity<SucataEquip>()
             .HasKey(key => key.SucataEquipId);
 
+        modelBuilder.Entity<Funcionario>()
+            .HasKey(key => key.FuncionarioId);
 
         /*
          * Chaves FOREIGN KEY
@@ -47,25 +50,37 @@ public class DataContext : DbContext
             .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
                 .WithOne(wOne => wOne.SucataEquip)
                     .HasForeignKey<SucataEquip>(fk => fk.ConsertoEquipId);
+        modelBuilder.Entity<Funcionario>()
+            .HasMany<Equipamento>(eq => eq.Equipamentos)
+                .WithOne(one => one.Funcionario)
+                    .HasForeignKey(fk => fk.EquipamentoId);
+
         /*
          * Atributos com DATA
          */
         modelBuilder.Entity<Equipamento>()
             .Property(dt => dt.DataEntrega)
                 .HasColumnType("smalldatetime")
-                    .HasDefaultValue(DateTime.Now);
+                    .HasDefaultValueSql("GETDATE()");
         modelBuilder.Entity<Ocorrencia>()
             .Property(dt => dt.DataOcorrencia)
                 .HasColumnType("smalldatetime")
-                    .HasDefaultValue(DateTime.Now);
+                    .HasDefaultValueSql("GETDATE()");
         modelBuilder.Entity<Ocorrencia>()
             .Property(dt => dt.DataFimOcorrencia)
                 .HasColumnType("smalldatetime");
         modelBuilder.Entity<SucataEquip>()
             .Property(dt => dt.DataDescarte)
                 .HasColumnType("smalldatetime")
-                    .HasDefaultValue(DateTime.Now);
-
+                    .HasDefaultValueSql("GETDATE()");
+        modelBuilder.Entity<Funcionario>()
+            .Property(dt => dt.DataAdmissao)
+                .HasColumnType("smalldatetime")
+                    .HasDefaultValueSql("GETDATE()")
+                        .IsRequired();
+        modelBuilder.Entity<Funcionario>()
+            .Property(dt => dt.DataDemissao)
+                .HasColumnType("smalldatetime");
         /*
          * PRIMARY KEYs is required
          */
@@ -121,5 +136,18 @@ public class DataContext : DbContext
             .Property(ds => ds.DescMotivo)
                 .HasMaxLength(250)
                     .IsRequired();
+        modelBuilder.Entity<Funcionario>()
+            .Property(p => p.FuncionarioCPF)
+                .HasColumnType("varchar(11)")
+                    .IsRequired();
+        modelBuilder.Entity<Funcionario>()
+            .Property(p => p.NomeFuncionario)
+                .HasColumnType("varchar(60)")
+                    .IsRequired();
+        modelBuilder.Entity<Funcionario>()
+            .Property(p => p.SobreNomeFuncionario)
+                .HasColumnType("varchar(60)")
+                    .IsRequired();
+        
     }
 }
