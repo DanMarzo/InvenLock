@@ -16,6 +16,7 @@ public class DataContext : DbContext
     public DbSet<Funcionario> Funcionarios { get; set; }
     public DbSet<HistoricoEmpresEquip> HistoricoEmpresEquips { get; set; }
     public DbSet<ContatoFuncionario> ContatoFuncionarios { get; set; }
+    public DbSet<EnderecoFuncionario> EnderecoFuncionarios { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         /*
@@ -42,6 +43,9 @@ public class DataContext : DbContext
         modelBuilder.Entity<ContatoFuncionario>()
             .HasKey(key => key.FuncionarioId);
 
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .HasKey(key => key.FuncionarioId);
+        
         /*
          * Chaves FOREIGN KEY
          */
@@ -69,6 +73,10 @@ public class DataContext : DbContext
         modelBuilder.Entity<ContatoFuncionario>()
             .HasOne<Funcionario>(one => one.Funcionario)
                 .WithOne(ct => ct.ContatoFuncionario)
+                    .HasForeignKey<ContatoFuncionario>(fk => fk.FuncionarioId);
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .HasOne<Funcionario>(one => one.Funcionario)
+                .WithOne(ct => ct.EnderecoFuncionario)
                     .HasForeignKey<ContatoFuncionario>(fk => fk.FuncionarioId);
         /*
          * Atributos com DATA
@@ -103,6 +111,11 @@ public class DataContext : DbContext
         modelBuilder.Entity<HistoricoEmpresEquip>()
             .Property(dt => dt.DateDevolucao)
                 .HasColumnType("smalldatetime");
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .Property(dt => dt.DataUltimaAtualizacao)
+                .HasColumnType("smalldatetime")
+                    .HasDefaultValueSql("GETDATE()");
+        
         /*
          * PRIMARY KEYs is required
          */
@@ -182,5 +195,14 @@ public class DataContext : DbContext
         modelBuilder.Entity<ContatoFuncionario>()
             .Property(tipo => tipo.EmailCorp)
                 .HasColumnType("varchar(60)");
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .Property(cep => cep.FuncionarioCEP)
+                .HasColumnType("varchar(8)");
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .Property(cep => cep.NomeRua)
+                .HasColumnType("varchar(50)");
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .Property(cep => cep.Numero)
+                .HasColumnType("int");
     }
 }

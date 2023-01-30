@@ -23,4 +23,6 @@ public class Funcionario
     public ICollection<HistoricoEmpresEquip> historicoEmpresEquips { get; set;}
     [JsonIgnore]
     public ContatoFuncionario ContatoFuncionario { get; set; }
+    [JsonIgnore]
+    public EnderecoFuncionario EnderecoFuncionario { get; set; }
 }
