@@ -11,6 +11,7 @@ public class ContatoFuncionario
     public string Email { get; set; }
     public string EmailCorp { get; set; }
     public string FuncionarioId { get; set; }
+    public DateTime DataUltimaAtualizacao { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }
 }
