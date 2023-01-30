@@ -2,6 +2,7 @@
 using InvenLock.Models.Enums.Conserto;
 using InvenLock.Models.Enums.Equipamento;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace InvenLock.Data;
 
@@ -11,6 +12,7 @@ public class DataContext : DbContext
     public DbSet<Equipamento> Equipamentos { get; set; }
     public DbSet<ConsertoEquip> ConsertoEquip { get; set; }
     public DbSet<Ocorrencia> Ocorrencias { get; set; }
+    public DbSet<SucataEquip> SucataEquips { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         /*
@@ -25,6 +27,10 @@ public class DataContext : DbContext
         modelBuilder.Entity<Ocorrencia>()
             .HasKey(key => key.OcorrenciaId);
 
+        modelBuilder.Entity<SucataEquip>()
+            .HasKey(key => key.SucataEquipId);
+
+
         /*
          * Chaves FOREIGN KEY
          */
@@ -37,18 +43,28 @@ public class DataContext : DbContext
             .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
                 .WithOne(one => one.Ocorrencia)
                     .HasForeignKey<ConsertoEquip>(fk => fk.OcorrenciaId);
+        modelBuilder.Entity<SucataEquip>()
+            .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
+                .WithOne(wOne => wOne.SucataEquip)
+                    .HasForeignKey<SucataEquip>(fk => fk.ConsertoEquipId);
         /*
          * Atributos com DATA
          */
         modelBuilder.Entity<Equipamento>()
             .Property(dt => dt.DataEntrega)
-                .HasColumnType("smalldatetime");
+                .HasColumnType("smalldatetime")
+                    .HasDefaultValue(DateTime.Now);
         modelBuilder.Entity<Ocorrencia>()
             .Property(dt => dt.DataOcorrencia)
-                .HasColumnType("smalldatetime");
+                .HasColumnType("smalldatetime")
+                    .HasDefaultValue(DateTime.Now);
         modelBuilder.Entity<Ocorrencia>()
             .Property(dt => dt.DataFimOcorrencia)
                 .HasColumnType("smalldatetime");
+        modelBuilder.Entity<SucataEquip>()
+            .Property(dt => dt.DataDescarte)
+                .HasColumnType("smalldatetime")
+                    .HasDefaultValue(DateTime.Now);
 
         /*
          * PRIMARY KEYs is required
@@ -68,14 +84,8 @@ public class DataContext : DbContext
          * Atributos com DEFAULT
          */
         modelBuilder.Entity<Ocorrencia>()
-            .Property(de => de.DataOcorrencia)
-                .HasDefaultValue(DateTime.Now);
-        modelBuilder.Entity<Ocorrencia>()
             .Property(de => de.SituacaoConserto)
                 .HasDefaultValue(SituacaoConserto.Pendente);
-        modelBuilder.Entity<Equipamento>()
-            .Property(dt => dt.DataEntrega)
-                .HasDefaultValue(DateTime.Now);
         modelBuilder.Entity<ConsertoEquip>()
             .Property(cs => cs.SituacaoConserto)
                 .HasDefaultValue(SituacaoConserto.Pendente);
@@ -94,6 +104,22 @@ public class DataContext : DbContext
         modelBuilder.Entity<Equipamento>()
             .Property (tp => tp.TipoEquip)
                 .IsRequired();
+        /*
+         * PARAMETROS ATRIBUTOS
+         */
 
+        modelBuilder.Entity<Ocorrencia>()
+            .Property(ds => ds.DescOcorrencia)
+                .HasMaxLength(250);
+        modelBuilder.Entity<Equipamento>()
+            .Property(ds => ds.DescEquipamento)
+                .HasMaxLength(250);
+        modelBuilder.Entity<ConsertoEquip>()
+            .Property(ds => ds.Procedimentos)
+                .HasMaxLength(250);
+        modelBuilder.Entity<SucataEquip>()
+            .Property(ds => ds.DescMotivo)
+                .HasMaxLength(250)
+                    .IsRequired();
     }
 }

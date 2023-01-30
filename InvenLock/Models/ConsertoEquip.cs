@@ -10,7 +10,7 @@ public class ConsertoEquip
 {
     public int ConsertoEquipId { get; set; }
     public SituacaoConserto SituacaoConserto { get; set; }
-    public string DescProblema { get; set; }
+    public string Procedimentos { get; set; }
 
     [Column(TypeName = "varchar(40)")]
     public string EquipamentoId { get; set; }
@@ -20,4 +20,6 @@ public class ConsertoEquip
     public string OcorrenciaId { get; set; }
     [JsonIgnore]
     public Ocorrencia Ocorrencia { get; set; }
+    [JsonIgnore]
+    public SucataEquip SucataEquip { get; set; }
 }
