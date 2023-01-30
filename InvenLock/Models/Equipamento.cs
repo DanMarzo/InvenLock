@@ -12,10 +12,11 @@ public class Equipamento
     public DateTime DataEntrega { get; set; }
     public SituacaoEquip SituacaoEquip { get; set; }
     public TipoEquip TipoEquip { get; set; }
-    public string? DescEquipamento { get; set; }
+    public string DescEquipamento { get; set; }
     [JsonIgnore]
     public ICollection<ConsertoEquip>? ConsertoEquips { get; set; }
     
+    public string FuncionarioId { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }
 }

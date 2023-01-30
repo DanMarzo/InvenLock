@@ -19,5 +19,7 @@ public class Funcionario
 
     [JsonIgnore]
     public ICollection<Equipamento> Equipamentos { get; set; }
+    [JsonIgnore]
+    public ICollection<HistoricoEmpresEquip> historicoEmpresEquips { get; set;}
 
 }
