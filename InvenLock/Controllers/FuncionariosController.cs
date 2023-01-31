@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using InvenLock.Data;
 using InvenLock.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -6,13 +10,13 @@ namespace InvenLock.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EquipamentosController : ControllerBase
+public class FuncionariosController : ControllerBase
 {
     private DataContext _context;
-    public EquipamentosController(DataContext context){_context = context;}
+    public FuncionariosController(DataContext context){_context = context;}
 
     [HttpPost]
-    public async Task<IActionResult> AddEquipamentoAsync(Equipamento equipamento)
+    public async Task<IActionResult> AddFuncionarioAsync(Funcionario funcionario)
     {
         try
         {
@@ -21,17 +25,16 @@ public class EquipamentosController : ControllerBase
             while(aceito != true)
             {
                 pk = Guid.NewGuid().ToString();
-                Equipamento chave = _context.Equipamentos.FirstOrDefault( x => x.EquipamentoId == pk);
+                Funcionario chave = _context.Funcionarios.FirstOrDefault( x => x.FuncionarioId == pk);
                 if(chave is null) aceito = true;
                 else if(chave != null) aceito = false;
             }
-            equipamento.EquipamentoId = pk;
+            funcionario.FuncionarioId = pk;
 
-            await _context.Equipamentos.AddAsync(equipamento);
+            await _context.Funcionarios.AddAsync(funcionario);
             await _context.SaveChangesAsync(); 
 
-            return Ok(equipamento);
-            //return Ok();
+            return Ok(funcionario);
         }
         catch (Exception ex)
         {

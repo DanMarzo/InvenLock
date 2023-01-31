@@ -1,212 +1,111 @@
-﻿using InvenLock.Models;
+
+using InvenLock.Models;
 using InvenLock.Models.Enums.Conserto;
 using InvenLock.Models.Enums.Equipamento;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace InvenLock.Data;
-
 public class DataContext : DbContext
 {
-    public DataContext(DbContextOptions<DataContext> options) : base(options){ }
+    public DataContext(DbContextOptions<DataContext> options ) : base(options){}
     public DbSet<Equipamento> Equipamentos { get; set; }
-    public DbSet<ConsertoEquip> ConsertoEquip { get; set; }
-    public DbSet<Ocorrencia> Ocorrencias { get; set; }
-    public DbSet<SucataEquip> SucataEquips { get; set; }
     public DbSet<Funcionario> Funcionarios { get; set; }
-    public DbSet<HistoricoEmpresEquip> HistoricoEmpresEquips { get; set; }
-    public DbSet<ContatoFuncionario> ContatoFuncionarios { get; set; }
-    public DbSet<EnderecoFuncionario> EnderecoFuncionarios { get; set; }
+    public DbSet<Ocorrencia> Ocorrencias { get; set; }
+    public DbSet<ConsertoEquip> ConsertoEquips { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        /*
-         * CHAVES PRIMARY KEY
-         */
+        modelBuilder.Entity<Equipamento>()
+            .HasOne<Funcionario>(f => f.Funcionario)
+                .WithMany(e => e.Equipamentos)
+                    .HasForeignKey(fk => fk.FuncionarioId);
+
         modelBuilder.Entity<Equipamento>()
             .HasKey(key => key.EquipamentoId);
+        modelBuilder.Entity<Equipamento>()
+            .Property(dt => dt.DataEntrega)
+            .HasColumnType("smalldatetime")
+            .HasDefaultValueSql("GETDATE()");
+        modelBuilder.Entity<Equipamento>()
+            .Property(te => te.TipoEquip)
+            .HasDefaultValue(TipoEquip.Desktop);
+        modelBuilder.Entity<Equipamento>()
+            .Property(st => st.SituacaoEquip)
+            .HasDefaultValue(SituacaoEquip.Disponível);
+        modelBuilder.Entity<Equipamento>()
+            .Property(fu => fu.FuncionarioRecebedor)
+            .HasColumnType("varchar(70)");
+        modelBuilder.Entity<Equipamento>()
+            .Property(desc => desc.DescEquipamento)
+            .HasColumnType("varchar(70)");
+        modelBuilder.Entity<Equipamento>()
+            .Property(desc => desc.MarcaEquipamento)
+            .HasColumnType("varchar(20)");
+
+        modelBuilder.Entity<Funcionario>()
+            .HasKey(key => key.FuncionarioId);
+        modelBuilder.Entity<Funcionario>()
+            .Property(dt => dt.DataAdmissao)
+            .HasColumnType("smalldatetime") 
+            .HasDefaultValueSql("GETDATE()");
+        modelBuilder.Entity<Funcionario>()
+            .Property(dt => dt.DataDemissao)
+            .HasColumnType("smalldatetime");
+        modelBuilder.Entity<Funcionario>()
+            .Property(cpf => cpf.FuncionarioCPF)
+            .HasColumnType("varchar(11)")
+            .IsRequired();
+        modelBuilder.Entity<Funcionario>()
+            .Property(cpf => cpf.NomeFuncionario)
+            .HasColumnType("varchar(40)")
+            .IsRequired();
+        modelBuilder.Entity<Funcionario>()
+            .Property(cpf => cpf.SobreNomeFuncionario)
+            .HasColumnType("varchar(50)")
+            .IsRequired();
+        modelBuilder.Entity<Funcionario>()
+            .Property(bl => bl.Ativo)
+                .HasDefaultValue(true);
 
         modelBuilder.Entity<ConsertoEquip>()
             .HasKey(key => key.ConsertoEquipId);
+        modelBuilder.Entity<ConsertoEquip>()
+            .Property(st => st.SituacaoConserto)
+            .HasDefaultValue(SituacaoConserto.Pendente);
+        modelBuilder.Entity<ConsertoEquip>()
+            .Property(ds => ds.Procedimentos)
+            .HasColumnType("varchar(500)");
+
+
 
         modelBuilder.Entity<Ocorrencia>()
             .HasKey(key => key.OcorrenciaId);
-
-        modelBuilder.Entity<SucataEquip>()
-            .HasKey(key => key.SucataEquipId);
-
-        modelBuilder.Entity<Funcionario>()
-            .HasKey(key => key.FuncionarioId);
-        
-        modelBuilder.Entity<HistoricoEmpresEquip>()
-            .HasKey(key => key.HistoricoEmpresEquipId);
-
-        modelBuilder.Entity<ContatoFuncionario>()
-            .HasKey(key => key.FuncionarioId);
-
-        modelBuilder.Entity<EnderecoFuncionario>()
-            .HasKey(key => key.FuncionarioId);
-        
-        /*
-         * Chaves FOREIGN KEY
-         */
-
-        modelBuilder.Entity<ConsertoEquip>()
-            .HasOne<Equipamento>(one => one.Equipamento)
-                .WithMany(many => many.ConsertoEquips)
-                    .HasForeignKey(fk => fk.EquipamentoId);
         modelBuilder.Entity<Ocorrencia>()
-            .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
-                .WithOne(one => one.Ocorrencia)
-                    .HasForeignKey<ConsertoEquip>(fk => fk.OcorrenciaId);
-        modelBuilder.Entity<SucataEquip>()
-            .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
-                .WithOne(wOne => wOne.SucataEquip)
-                    .HasForeignKey<SucataEquip>(fk => fk.ConsertoEquipId);
-        modelBuilder.Entity<Funcionario>()
-            .HasMany<Equipamento>(eq => eq.Equipamentos)
-                .WithOne(one => one.Funcionario)
-                    .HasForeignKey(fk => fk.EquipamentoId);
-        modelBuilder.Entity<HistoricoEmpresEquip>()
-            .HasOne<Funcionario>(many => many.Funcionario)
-                .WithMany(his => his.historicoEmpresEquips)
-                    .HasForeignKey(fk => fk.FuncionarioId);
-        modelBuilder.Entity<ContatoFuncionario>()
-            .HasOne<Funcionario>(one => one.Funcionario)
-                .WithOne(ct => ct.ContatoFuncionario)
-                    .HasForeignKey<ContatoFuncionario>(fk => fk.FuncionarioId);
-        modelBuilder.Entity<EnderecoFuncionario>()
-            .HasOne<Funcionario>(one => one.Funcionario)
-                .WithOne(ct => ct.EnderecoFuncionario)
-                    .HasForeignKey<EnderecoFuncionario>(fk => fk.FuncionarioId);
-        /*
-         * Atributos com DATA
-         */
-        modelBuilder.Entity<Equipamento>()
-            .Property(dt => dt.DataEntrega)
-                .HasColumnType("smalldatetime")
-                    .HasDefaultValueSql("GETDATE()");
+            .Property(ds => ds.DescOcorrencia)
+            .HasColumnType("varchar(300)");
+        modelBuilder.Entity<Ocorrencia>()
+            .Property(fid => fid.FuncionarioId)
+            .HasColumnType("varchar(70)");
+        modelBuilder.Entity<Ocorrencia>()
+            .Property(cpf => cpf.FuncionarioCPF)
+            .HasColumnType("varchar(11)");
         modelBuilder.Entity<Ocorrencia>()
             .Property(dt => dt.DataOcorrencia)
-                .HasColumnType("smalldatetime")
-                    .HasDefaultValueSql("GETDATE()");
+            .HasColumnType("smalldatetime")
+            .HasDefaultValueSql("GETDATE()");
         modelBuilder.Entity<Ocorrencia>()
             .Property(dt => dt.DataFimOcorrencia)
-                .HasColumnType("smalldatetime");
-        modelBuilder.Entity<SucataEquip>()
-            .Property(dt => dt.DataDescarte)
-                .HasColumnType("smalldatetime")
-                    .HasDefaultValueSql("GETDATE()");
-        modelBuilder.Entity<Funcionario>()
-            .Property(dt => dt.DataAdmissao)
-                .HasColumnType("smalldatetime")
-                    .HasDefaultValueSql("GETDATE()")
-                        .IsRequired();
-        modelBuilder.Entity<Funcionario>()
-            .Property(dt => dt.DataDemissao)
-                .HasColumnType("smalldatetime");
-        modelBuilder.Entity<HistoricoEmpresEquip>()
-            .Property(dt => dt.DataEmprestimo)
-                .HasColumnType("smalldatetime")
-                    .HasDefaultValueSql("GETDATE()");
-        modelBuilder.Entity<HistoricoEmpresEquip>()
-            .Property(dt => dt.DateDevolucao)
-                .HasColumnType("smalldatetime");
-        modelBuilder.Entity<EnderecoFuncionario>()
-            .Property(dt => dt.DataUltimaAtualizacao)
-                .HasColumnType("smalldatetime")
-                    .HasDefaultValueSql("GETDATE()");
-        modelBuilder.Entity<ContatoFuncionario>()
-            .Property(dt => dt.DataUltimaAtualizacao)
-                .HasDefaultValueSql("GETDATE()");
+            .HasColumnType("smalldatetime");
+        modelBuilder.Entity<Ocorrencia>()
+            .Property(st => st.SituacaoConserto)
+            .HasDefaultValue(SituacaoConserto.Pendente);
         
-        /*
-         * PRIMARY KEYs is required
-         */
-
-        /*modelBuilder.Entity<Ocorrencia>()
-            .Property(key => key.OcorrenciaId)
-                .IsRequired();
-        modelBuilder.Entity<Equipamento>()
-            .Property(key => key.EquipamentoId)
-                .IsRequired(); 
-        modelBuilder.Entity<ConsertoEquip>()
-            .Property(key => key.ConsertoEquipId)
-                .IsRequired();
+        /*DEFININDO CHAVES ESTRANGEIRAS
         */
-        
-        /*
-         * Atributos com DEFAULT
-         */
-        modelBuilder.Entity<Ocorrencia>()
-            .Property(de => de.SituacaoConserto)
-                .HasDefaultValue(SituacaoConserto.Pendente);
-        modelBuilder.Entity<ConsertoEquip>()
-            .Property(cs => cs.SituacaoConserto)
-                .HasDefaultValue(SituacaoConserto.Pendente);
-        modelBuilder.Entity<Equipamento>()
-            .Property(st => st.SituacaoEquip)
-                .HasDefaultValue(SituacaoEquip.Disponível);
-        /*
-         * Atributos com REQUIRED
-         */
-        modelBuilder.Entity<Ocorrencia>()
-            .Property(fu => fu.FuncionarioCPF)
-                .IsRequired();
-        modelBuilder.Entity<Ocorrencia>()
-            .Property(ds => ds.DescOcorrencia)
-                .IsRequired();
-        modelBuilder.Entity<Equipamento>()
-            .Property (tp => tp.TipoEquip)
-                .IsRequired();
-        /*
-         * PARAMETROS ATRIBUTOS
-         */
 
-        modelBuilder.Entity<Ocorrencia>()
-            .Property(ds => ds.DescOcorrencia)
-                .HasMaxLength(250);
-        modelBuilder.Entity<Equipamento>()
-            .Property(ds => ds.DescEquipamento)
-                .HasMaxLength(250);
         modelBuilder.Entity<ConsertoEquip>()
-            .Property(ds => ds.Procedimentos)
-                .HasMaxLength(250);
-        modelBuilder.Entity<SucataEquip>()
-            .Property(ds => ds.DescMotivo)
-                .HasMaxLength(250)
-                    .IsRequired();
-        modelBuilder.Entity<Funcionario>()
-            .Property(p => p.FuncionarioCPF)
-                .HasColumnType("varchar(11)")
-                    .IsRequired();
-        modelBuilder.Entity<Funcionario>()
-            .Property(p => p.NomeFuncionario)
-                .HasColumnType("varchar(60)")
-                    .IsRequired();
-        modelBuilder.Entity<Funcionario>()
-            .Property(p => p.SobreNomeFuncionario)
-                .HasColumnType("varchar(60)")
-                    .IsRequired();
-        modelBuilder.Entity<ContatoFuncionario>()
-            .Property(tipo => tipo.Celular)
-                .HasColumnType("varchar(11)");
-        modelBuilder.Entity<ContatoFuncionario>()
-            .Property(tipo => tipo.CelularCorp)
-                .HasColumnType("varchar(11)");
-        modelBuilder.Entity<ContatoFuncionario>()
-            .Property(tipo => tipo.Email)
-                .HasColumnType("varchar(60)");
-        modelBuilder.Entity<ContatoFuncionario>()
-            .Property(tipo => tipo.EmailCorp)
-                .HasColumnType("varchar(60)");
-        modelBuilder.Entity<EnderecoFuncionario>()
-            .Property(cep => cep.FuncionarioCEP)
-                .HasColumnType("varchar(8)");
-        modelBuilder.Entity<EnderecoFuncionario>()
-            .Property(cep => cep.NomeRua)
-                .HasColumnType("varchar(50)");
-        modelBuilder.Entity<EnderecoFuncionario>()
-            .Property(cep => cep.Numero)
-                .HasColumnType("int");
+            .HasOne<Ocorrencia>(ce => ce.Ocorrencia)
+            .WithOne(oc => oc.ConsertoEquip)
+                .HasForeignKey<ConsertoEquip>(fk => fk.OcorrenciaId);
     }
 }
