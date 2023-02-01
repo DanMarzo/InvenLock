@@ -13,6 +13,7 @@ public class ConsertoEquip
     public string Procedimentos { get; set; }
 
     [Column(TypeName ="varchar(70)")]
+    public int CodigoInterno { get; set; }
     public string OcorrenciaId { get; set; }
     [JsonIgnore]
     public Ocorrencia Ocorrencia { get; set; }
@@ -21,4 +22,6 @@ public class ConsertoEquip
     public string EquipamentoId { get; set; }
     [JsonIgnore]
     public Equipamento Equipamento { get; set; }
+    [JsonIgnore]
+    public SucataEquip SucataEquip { get; set; }
 }

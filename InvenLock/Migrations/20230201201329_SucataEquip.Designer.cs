@@ -4,6 +4,7 @@ using InvenLock.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvenLock.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230201201329_SucataEquip")]
+    partial class SucataEquip
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,10 +32,6 @@ namespace InvenLock.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConsertoEquipId"));
-
-                    b.Property<string>("CodigoInterno")
-                        .IsRequired()
-                        .HasColumnType("varchar(70)");
 
                     b.Property<string>("EquipamentoId")
                         .HasColumnType("varchar(70)");
@@ -63,9 +62,6 @@ namespace InvenLock.Migrations
                 {
                     b.Property<string>("EquipamentoId")
                         .HasColumnType("varchar(70)");
-
-                    b.Property<int>("CodigoInterno")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DataEntrega")
                         .ValueGeneratedOnAdd()
@@ -144,9 +140,6 @@ namespace InvenLock.Migrations
                     b.Property<string>("OcorrenciaId")
                         .HasColumnType("varchar(70)");
 
-                    b.Property<int>("CodigoInterno")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DataFimOcorrencia")
                         .HasColumnType("smalldatetime");
 
@@ -184,9 +177,6 @@ namespace InvenLock.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SucataEquipId"));
-
-                    b.Property<int>("CodigoInterno")
-                        .HasColumnType("int");
 
                     b.Property<int>("ConsertoEquipId")
                         .HasColumnType("int");

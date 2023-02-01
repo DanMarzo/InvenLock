@@ -9,6 +9,7 @@ public class Equipamento
     [Column(TypeName = "varchar(70)")]
     public string EquipamentoId { get; set; }
     public DateTime? DataEntrega { get; set; }
+    public int CodigoInterno { get; set; }
     public SituacaoEquip SituacaoEquip { get; set; }
     public TipoEquip TipoEquip { get; set; }
     [Column(TypeName = "varchar(70)")]

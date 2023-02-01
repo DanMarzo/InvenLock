@@ -99,7 +99,20 @@ public class DataContext : DbContext
         modelBuilder.Entity<Ocorrencia>()
             .Property(st => st.SituacaoConserto)
             .HasDefaultValue(SituacaoConserto.Pendente);
+        modelBuilder.Entity<Ocorrencia>()
+            .Property(p => p.MotivoSucata)
+            .HasColumnType("varchar(200)");
         
+        modelBuilder.Entity<SucataEquip>()
+            .HasKey(key => key.SucataEquipId);
+        modelBuilder.Entity<SucataEquip>()
+            .Property(p => p.MotivoSucata)
+            .HasColumnType("varchar(250)");
+        modelBuilder.Entity<SucataEquip>()
+            .Property(p => p.DataDescarte)
+            .HasColumnType("SMALLDATETIME")
+            .HasDefaultValueSql("GETDATE()");
+
         /*DEFININDO CHAVES ESTRANGEIRAS
         */
 
@@ -113,5 +126,9 @@ public class DataContext : DbContext
             .WithOne(one => one.Equipamento)
                 .HasForeignKey(fk => fk.EquipamentoId);
 
+        modelBuilder.Entity<SucataEquip>()
+            .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
+            .WithOne(one => one.SucataEquip)
+                .HasForeignKey<SucataEquip>(fk => fk.ConsertoEquipId);   
     }
 }
