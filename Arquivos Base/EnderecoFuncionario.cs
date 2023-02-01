@@ -5,7 +5,7 @@ namespace InvenLock.Models;
 
 public class EnderecoFuncionario
 {
-    [Column(TypeName ="varchar(40)")]
+    [Column(TypeName ="varchar(70)")]
     public string FuncionarioId { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }

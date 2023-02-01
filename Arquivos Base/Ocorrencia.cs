@@ -11,9 +11,9 @@ public class Ocorrencia
     public string DescOcorrencia { get; set; }
     public string FuncionarioId { get; set; }
     public string FuncionarioCPF { get; set; }
-    public SituacaoConserto? SituacaoConserto { get; set; }
-    public DateTime? DataOcorrencia { get; set; }
-    public DateTime? DataFimOcorrencia { get; set; }
+    public SituacaoConserto SituacaoConserto { get; set; }
+    public DateTime DataOcorrencia { get; set; }
+    public DateTime DataFimOcorrencia { get; set; }
     [JsonIgnore]
     public ConsertoEquip ConsertoEquip { get; set; }
 }

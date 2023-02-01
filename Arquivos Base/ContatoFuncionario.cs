@@ -5,7 +5,7 @@ namespace InvenLock.Models;
 
 public class ContatoFuncionario
 {
-    [Column(TypeName ="varchar(40)")]
+    [Column(TypeName ="varchar(70)")]
     public string Celular { get; set; }
     public string CelularCorp { get; set; }
     public string Email { get; set; }

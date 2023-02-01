@@ -1,6 +1,5 @@
 using InvenLock.Data;
 using InvenLock.Models;
-using InvenLock.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvenLock.Controllers;
@@ -17,19 +16,22 @@ public class EquipamentosController : ControllerBase
     {
         try
         {
-            if(equipamento is null)
-                throw new Exception("Dados do equipamento não poder ser vazio");
-            ChavesPK pk = new();
+            bool aceito = false;
+            string pk = "";
+            while(aceito != true)
+            {
+                pk = Guid.NewGuid().ToString();
+                Equipamento chave = _context.Equipamentos.FirstOrDefault( x => x.EquipamentoId == pk);
+                if(chave is null) aceito = true;
+                else if(chave != null) aceito = false;
+            }
+            equipamento.EquipamentoId = pk;
 
-            if(!((int)equipamento.TipoEquip > 0 && (int)equipamento.TipoEquip <4 ))
-                throw new Exception("Tipo do Equipamento invalido!");
-            equipamento.EquipamentoId = pk.GeradorPK(1);
-            
             await _context.Equipamentos.AddAsync(equipamento);
             await _context.SaveChangesAsync(); 
 
             return Ok(equipamento);
-            //return new CreatedAtRouteResult();
+            //return Ok();
         }
         catch (Exception ex)
         {
