@@ -30,6 +30,9 @@ namespace InvenLock.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConsertoEquipId"));
 
+                    b.Property<string>("EquipamentoId")
+                        .HasColumnType("varchar(70)");
+
                     b.Property<string>("OcorrenciaId")
                         .HasColumnType("varchar(70)");
 
@@ -42,6 +45,8 @@ namespace InvenLock.Migrations
                         .HasDefaultValue(1);
 
                     b.HasKey("ConsertoEquipId");
+
+                    b.HasIndex("EquipamentoId");
 
                     b.HasIndex("OcorrenciaId")
                         .IsUnique()
@@ -161,9 +166,15 @@ namespace InvenLock.Migrations
 
             modelBuilder.Entity("InvenLock.Models.ConsertoEquip", b =>
                 {
+                    b.HasOne("InvenLock.Models.Equipamento", "Equipamento")
+                        .WithMany("ConsertoEquips")
+                        .HasForeignKey("EquipamentoId");
+
                     b.HasOne("InvenLock.Models.Ocorrencia", "Ocorrencia")
                         .WithOne("ConsertoEquip")
                         .HasForeignKey("InvenLock.Models.ConsertoEquip", "OcorrenciaId");
+
+                    b.Navigation("Equipamento");
 
                     b.Navigation("Ocorrencia");
                 });
@@ -175,6 +186,11 @@ namespace InvenLock.Migrations
                         .HasForeignKey("FuncionarioId");
 
                     b.Navigation("Funcionario");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.Equipamento", b =>
+                {
+                    b.Navigation("ConsertoEquips");
                 });
 
             modelBuilder.Entity("InvenLock.Models.Funcionario", b =>
