@@ -15,10 +15,6 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Equipamento>()
-            .HasOne<Funcionario>(f => f.Funcionario)
-                .WithMany(e => e.Equipamentos)
-                    .HasForeignKey(fk => fk.FuncionarioId);
 
         modelBuilder.Entity<Equipamento>()
             .HasKey(key => key.EquipamentoId);
@@ -113,13 +109,21 @@ public class DataContext : DbContext
             .HasColumnType("SMALLDATETIME")
             .HasDefaultValueSql("GETDATE()");
 
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .HasKey(key => key.FuncionarioId);
+        
+
         /*DEFININDO CHAVES ESTRANGEIRAS
         */
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .HasOne<Equipamento>(one => one.Equipamento)
+            .WithMany(many => many.EquipamentoEmprestimo)
+                .HasForeignKey(fk => fk.EquipamentoId);
 
-        modelBuilder.Entity<ConsertoEquip>()
-            .HasOne<Ocorrencia>(ce => ce.Ocorrencia)
-            .WithOne(oc => oc.ConsertoEquip)
-                .HasForeignKey<ConsertoEquip>(fk => fk.OcorrenciaId);
+        modelBuilder.Entity<Ocorrencia>()
+            .HasOne<Funcionario>(one => one.Funcionario)
+            .WithMany(many => many.Ocorrencia)
+                .HasForeignKey(fk => fk.FuncionarioId);            
         
         modelBuilder.Entity<Equipamento>()
             .HasMany(many => many.ConsertoEquips)

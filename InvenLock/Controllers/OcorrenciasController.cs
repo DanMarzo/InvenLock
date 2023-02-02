@@ -19,18 +19,16 @@ public class OcorrenciasController : ControllerBase
         try
         {
             if (ocorrencia.FuncionarioCPF is null)
-                throw new Exception("O campo do CPF responsável é obrigatório");
+                throw new Exception("O campo do CPF do responsável é obrigatório");
             //A PARTE ABAIXO AINDA ESTA EM ESTE
             VerificaDados verificar = new();
             if(!verificar.RecebeCpf(ocorrencia.FuncionarioCPF))
-                return NotFound("Verifique o CPF");
+                throw new Exception("Verifique o CPF");
 
-            Funcionario funcionario = await _context.Funcionarios
-                .FirstOrDefaultAsync(x => x.FuncionarioCPF == ocorrencia.FuncionarioCPF);
-            if(funcionario is null)
-                return NotFound("CPF não cadastrado");
+            //Ocorrencia funcionarioOcorrencia = await _context.Ocorrencias
+              //  .Include(c => c.)
                 
-            ocorrencia.FuncionarioId = funcionario.FuncionarioId;
+            //ocorrencia.FuncionarioId = funcionario.FuncionarioId;
 
             bool aceito = false;
             string pk = "";
@@ -43,7 +41,6 @@ public class OcorrenciasController : ControllerBase
                 else if(chave != null) aceito = false;
             }
             ocorrencia.OcorrenciaId = pk;
-            
 
             await _context.Ocorrencias.AddAsync(ocorrencia);
             await _context.SaveChangesAsync();
@@ -56,7 +53,7 @@ public class OcorrenciasController : ControllerBase
         }
     }
 
-    [HttpPost("OcorrenciaAll")]
+    /*[HttpPost("OcorrenciaAll")]
     public async Task<IActionResult> FuncionariosOcorrencias(string cpf)
     {
         try
@@ -70,9 +67,8 @@ public class OcorrenciasController : ControllerBase
                 .Include(f => f.ConsertoEquip.Equipamento.Funcionario)
                 .FirstOrDefaultAsync(x => x.FuncionarioId == cpf);
            
-           
             if(ocorrencias is null)
-                return NotFound("Nenhum funcionario com esse CPF foi encontrada!");
+                return NotFound("Nenhum ocorrência com esse CPF foi encontrada!");
             
             return Ok(ocorrencias);
 
@@ -82,4 +78,6 @@ public class OcorrenciasController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    */
+
 }
