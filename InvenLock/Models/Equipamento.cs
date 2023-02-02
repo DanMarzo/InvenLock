@@ -6,6 +6,7 @@ namespace InvenLock.Models;
 
 public class Equipamento
 {
+    [JsonIgnore]
     [Column(TypeName = "varchar(70)")]
     public string EquipamentoId { get; set; }
     public DateTime? DataEntrega { get; set; }
@@ -16,10 +17,9 @@ public class Equipamento
     public string FuncionarioRecebedor { get; set; }
     public string MarcaEquipamento { get; set; }
     public string DescEquipamento { get; set; }
-    [Column(TypeName = "varchar(70)")]
-    public string FuncionarioId { get; set; }
-    [JsonIgnore]
-    public Funcionario Funcionario { get; set; }
+    
     [JsonIgnore]
     public ICollection<ConsertoEquip> ConsertoEquips { get; set; }
+    [JsonIgnore]
+    public ICollection<EquipamentoEmprestimo> EquipamentoEmprestimo { get; set; }
 }
