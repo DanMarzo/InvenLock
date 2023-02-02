@@ -6,6 +6,7 @@ namespace InvenLock.Models;
 
 public class Ocorrencia
 {
+    [JsonIgnore]
     [Column(TypeName = "varchar(70)")]
     public string OcorrenciaId { get; set; }
     public string DescOcorrencia { get; set; }
@@ -17,5 +18,5 @@ public class Ocorrencia
     public DateTime? DataOcorrencia { get; set; }
     public DateTime? DataFimOcorrencia { get; set; }
     [JsonIgnore]
-    public ConsertoEquip ConsertoEquip { get; set; }
+    public Funcionario Funcionario { get; set; }
 }
