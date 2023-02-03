@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvenLock.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230202133129_NovaRelacao")]
-    partial class NovaRelacao
+    [Migration("20230202140710_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,72 @@ namespace InvenLock.Migrations
                     b.HasIndex("EquipamentoId");
 
                     b.ToTable("ConsertoEquips");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.ContatoFuncionario", b =>
+                {
+                    b.Property<string>("FuncionarioId")
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<string>("Celular")
+                        .HasColumnType("VARCHAR(11)");
+
+                    b.Property<string>("CelularCorp")
+                        .HasColumnType("VARCHAR(11)");
+
+                    b.Property<DateTime?>("DataUltimaAtualizacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smalldatetime")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("VARCHAR(70)");
+
+                    b.Property<string>("EmailCorp")
+                        .HasColumnType("VARCHAR(70)");
+
+                    b.Property<string>("FuncionarioId1")
+                        .IsRequired()
+                        .HasColumnType("varchar(70)");
+
+                    b.HasKey("FuncionarioId");
+
+                    b.HasIndex("FuncionarioId1");
+
+                    b.ToTable("ContatoFuncionario");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.EnderecoFuncionario", b =>
+                {
+                    b.Property<string>("FuncionarioId")
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("VARCHAR(250)");
+
+                    b.Property<DateTime?>("DataUltimaAtualizacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smalldatetime")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("FuncionarioCEP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FuncionarioId1")
+                        .IsRequired()
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<string>("NomeRua")
+                        .HasColumnType("VARCHAR(30)");
+
+                    b.Property<int>("Numero")
+                        .HasColumnType("int");
+
+                    b.HasKey("FuncionarioId");
+
+                    b.HasIndex("FuncionarioId1");
+
+                    b.ToTable("EnderecoFuncionario");
                 });
 
             modelBuilder.Entity("InvenLock.Models.Equipamento", b =>
@@ -234,6 +300,28 @@ namespace InvenLock.Migrations
                         .HasForeignKey("EquipamentoId");
 
                     b.Navigation("Equipamento");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.ContatoFuncionario", b =>
+                {
+                    b.HasOne("InvenLock.Models.Funcionario", "Funcionario")
+                        .WithMany()
+                        .HasForeignKey("FuncionarioId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Funcionario");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.EnderecoFuncionario", b =>
+                {
+                    b.HasOne("InvenLock.Models.Funcionario", "Funcionario")
+                        .WithMany()
+                        .HasForeignKey("FuncionarioId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Funcionario");
                 });
 
             modelBuilder.Entity("InvenLock.Models.EquipamentoEmprestimo", b =>

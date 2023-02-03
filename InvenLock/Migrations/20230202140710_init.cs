@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace InvenLock.Migrations
 {
     /// <inheritdoc />
-    public partial class NovaRelacao : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,6 +66,52 @@ namespace InvenLock.Migrations
                         column: x => x.EquipamentoId,
                         principalTable: "Equipamentos",
                         principalColumn: "EquipamentoId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContatoFuncionario",
+                columns: table => new
+                {
+                    FuncionarioId = table.Column<string>(type: "varchar(70)", nullable: false),
+                    FuncionarioId1 = table.Column<string>(type: "varchar(70)", nullable: false),
+                    DataUltimaAtualizacao = table.Column<DateTime>(type: "smalldatetime", nullable: true, defaultValueSql: "GETDATE()"),
+                    Celular = table.Column<string>(type: "VARCHAR(11)", nullable: true),
+                    CelularCorp = table.Column<string>(type: "VARCHAR(11)", nullable: true),
+                    Email = table.Column<string>(type: "VARCHAR(70)", nullable: true),
+                    EmailCorp = table.Column<string>(type: "VARCHAR(70)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContatoFuncionario", x => x.FuncionarioId);
+                    table.ForeignKey(
+                        name: "FK_ContatoFuncionario_Funcionarios_FuncionarioId1",
+                        column: x => x.FuncionarioId1,
+                        principalTable: "Funcionarios",
+                        principalColumn: "FuncionarioId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EnderecoFuncionario",
+                columns: table => new
+                {
+                    FuncionarioId = table.Column<string>(type: "varchar(70)", nullable: false),
+                    FuncionarioId1 = table.Column<string>(type: "varchar(70)", nullable: false),
+                    FuncionarioCEP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Numero = table.Column<int>(type: "int", nullable: false),
+                    NomeRua = table.Column<string>(type: "VARCHAR(30)", nullable: true),
+                    Complemento = table.Column<string>(type: "VARCHAR(250)", nullable: true),
+                    DataUltimaAtualizacao = table.Column<DateTime>(type: "smalldatetime", nullable: true, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EnderecoFuncionario", x => x.FuncionarioId);
+                    table.ForeignKey(
+                        name: "FK_EnderecoFuncionario_Funcionarios_FuncionarioId1",
+                        column: x => x.FuncionarioId1,
+                        principalTable: "Funcionarios",
+                        principalColumn: "FuncionarioId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -146,6 +192,16 @@ namespace InvenLock.Migrations
                 column: "EquipamentoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ContatoFuncionario_FuncionarioId1",
+                table: "ContatoFuncionario",
+                column: "FuncionarioId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EnderecoFuncionario_FuncionarioId1",
+                table: "EnderecoFuncionario",
+                column: "FuncionarioId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EquipamentoEmprestimo_EquipamentoId",
                 table: "EquipamentoEmprestimo",
                 column: "EquipamentoId");
@@ -170,6 +226,12 @@ namespace InvenLock.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ContatoFuncionario");
+
+            migrationBuilder.DropTable(
+                name: "EnderecoFuncionario");
+
             migrationBuilder.DropTable(
                 name: "EquipamentoEmprestimo");
 
