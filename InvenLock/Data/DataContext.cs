@@ -8,17 +8,58 @@ namespace InvenLock.Data;
 public class DataContext : DbContext
 {
     public DataContext(DbContextOptions<DataContext> options ) : base(options){}
+    public DbSet<ConsertoEquip> ConsertoEquips { get; set; }
+    public DbSet<ContatoFuncionario> ContatoFuncionarios { get; set; }
+    public DbSet<EnderecoFuncionario> EnderecoFuncionarios { get; set; }
     public DbSet<Equipamento> Equipamentos { get; set; }
+    public DbSet<EquipamentoEmprestimo> EquipamentoEmprestimos { get; set; }
     public DbSet<Funcionario> Funcionarios { get; set; }
     public DbSet<Ocorrencia> Ocorrencias { get; set; }
-    public DbSet<ConsertoEquip> ConsertoEquips { get; set; }
+    public DbSet<SucataEquip> SucataEquips { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Equipamento>()
-            .HasOne<Funcionario>(f => f.Funcionario)
-                .WithMany(e => e.Equipamentos)
-                    .HasForeignKey(fk => fk.FuncionarioId);
+
+        /* ------ ENDERECOFUNCIONARIO ------ */
+
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .HasKey(key => key.FuncionarioId);
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .Property(p => p.Complemento)
+            .HasColumnType("VARCHAR(250)");
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .Property(p => p.DataUltimaAtualizacao)
+            .HasColumnType("smalldatetime")
+                .HasDefaultValueSql("GETDATE()");
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .Property(p => p.NomeRua)
+            .HasColumnType("VARCHAR(30)");
+        modelBuilder.Entity<EnderecoFuncionario>()  
+            .Property(p => p.Numero)
+            .HasColumnType("int");
+
+        /* ------ CONTATOFUNCIONARIO ------ */
+    
+        modelBuilder.Entity<ContatoFuncionario>()
+            .HasKey(key => key.FuncionarioId);
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(p => p.Celular)
+            .HasColumnType("VARCHAR(11)");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(p => p.CelularCorp)
+            .HasColumnType("VARCHAR(11)");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(p => p.Email)
+            .HasColumnType("VARCHAR(70)");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(p => p.EmailCorp)
+            .HasColumnType("VARCHAR(70)");
+        modelBuilder.Entity<ContatoFuncionario>()
+            .Property(p => p.DataUltimaAtualizacao)
+            .HasColumnType("smalldatetime")
+            .HasDefaultValueSql("GETDATE()");
+            
+        /* ------ EQUIPAMENTO ------ */
 
         modelBuilder.Entity<Equipamento>()
             .HasKey(key => key.EquipamentoId);
@@ -41,6 +82,8 @@ public class DataContext : DbContext
         modelBuilder.Entity<Equipamento>()
             .Property(desc => desc.MarcaEquipamento)
             .HasColumnType("varchar(20)");
+
+        /* ------ FUNCIONARIO ------ */
 
         modelBuilder.Entity<Funcionario>()
             .HasKey(key => key.FuncionarioId);
@@ -67,6 +110,8 @@ public class DataContext : DbContext
             .Property(bl => bl.Ativo)
                 .HasDefaultValue(true);
 
+        /* ------ CONSERTOEQUIP ------ */
+
         modelBuilder.Entity<ConsertoEquip>()
             .HasKey(key => key.ConsertoEquipId);
         modelBuilder.Entity<ConsertoEquip>()
@@ -76,7 +121,7 @@ public class DataContext : DbContext
             .Property(ds => ds.Procedimentos)
             .HasColumnType("varchar(500)");
 
-
+        /* ------ OCORRENCIA ------ */
 
         modelBuilder.Entity<Ocorrencia>()
             .HasKey(key => key.OcorrenciaId);
@@ -99,13 +144,49 @@ public class DataContext : DbContext
         modelBuilder.Entity<Ocorrencia>()
             .Property(st => st.SituacaoConserto)
             .HasDefaultValue(SituacaoConserto.Pendente);
+        modelBuilder.Entity<Ocorrencia>()
+            .Property(p => p.MotivoSucata)
+            .HasColumnType("varchar(200)");
+
+        /* ------ SUCATAEQUIP ------ */
+
+        modelBuilder.Entity<SucataEquip>()
+            .HasKey(key => key.SucataEquipId);
+        modelBuilder.Entity<SucataEquip>()
+            .Property(p => p.MotivoSucata)
+            .HasColumnType("varchar(250)");
+        modelBuilder.Entity<SucataEquip>()
+            .Property(p => p.DataDescarte)
+            .HasColumnType("SMALLDATETIME")
+            .HasDefaultValueSql("GETDATE()");
+
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .HasKey(key => key.FuncionarioId);
         
+
         /*DEFININDO CHAVES ESTRANGEIRAS
         */
+        //modelBuilder.Entity<EnderecoFuncionario>()
+          //  .
 
-        modelBuilder.Entity<ConsertoEquip>()
-            .HasOne<Ocorrencia>(ce => ce.Ocorrencia)
-            .WithOne(oc => oc.ConsertoEquip)
-                .HasForeignKey<ConsertoEquip>(fk => fk.OcorrenciaId);
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .HasOne<Equipamento>(one => one.Equipamento)
+            .WithMany(many => many.EquipamentoEmprestimo)
+                .HasForeignKey(fk => fk.EquipamentoId);
+
+        modelBuilder.Entity<Ocorrencia>()
+            .HasOne<Funcionario>(one => one.Funcionario)
+            .WithMany(many => many.Ocorrencia)
+                .HasForeignKey(fk => fk.FuncionarioId);            
+        
+        modelBuilder.Entity<Equipamento>()
+            .HasMany(many => many.ConsertoEquips)
+            .WithOne(one => one.Equipamento)
+                .HasForeignKey(fk => fk.EquipamentoId);
+
+        modelBuilder.Entity<SucataEquip>()
+            .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
+            .WithOne(one => one.SucataEquip)
+                .HasForeignKey<SucataEquip>(fk => fk.ConsertoEquipId);   
     }
 }

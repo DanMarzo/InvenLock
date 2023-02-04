@@ -7,6 +7,7 @@ namespace InvenLock.Models;
 
 public class Funcionario
 {
+    [JsonIgnore]
     [Column(TypeName = "varchar(70)")]
     public string FuncionarioId { get; set; }   
     public string NomeFuncionario { get; set; }
@@ -17,5 +18,5 @@ public class Funcionario
     public bool? Ativo { get; set; }
     public FuncionarioCargo FuncionarioCargo { get; set; }
     [JsonIgnore]
-    public ICollection<Equipamento> Equipamentos { get; set; }
+    public ICollection<Ocorrencia> Ocorrencia { get; set; }
 }

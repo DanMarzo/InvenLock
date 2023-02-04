@@ -3,15 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace InvenLock.Models;
 
-public class HistoricoEmpresEquip
+public class EnderecoFuncionario
 {
-    public int HistoricoEmpresEquipId { get; set; }
-    public DateTime DataEmprestimo { get; set; }
-    public DateTime DateDevolucao { get; set;}
-    [Column(TypeName ="varchar(70)")]
-    public string EquipamentoId { get; set; }
     [Column(TypeName ="varchar(70)")]
     public string FuncionarioId { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }
+    public string FuncionarioCEP { get; set; }
+    public int Numero { get; set; }
+    public string NomeRua { get; set; }
+    public string Complemento { get; set; }
+    public DateTime? DataUltimaAtualizacao { get; set; }    
 }

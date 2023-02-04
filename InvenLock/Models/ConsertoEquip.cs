@@ -8,18 +8,18 @@ namespace InvenLock.Models;
 
 public class ConsertoEquip
 {
+    [JsonIgnore]
     public int ConsertoEquipId { get; set; }
     public SituacaoConserto? SituacaoConserto { get; set; }
     public string Procedimentos { get; set; }
 
     [Column(TypeName ="varchar(70)")]
-    public string OcorrenciaId { get; set; }
-    [JsonIgnore]
-    public Ocorrencia Ocorrencia { get; set; }
+    public int CodigoInterno { get; set; }
 
-    /*[Column(TypeName = "varchar(70)")]
+    [Column(TypeName = "varchar(70)")]
     public string EquipamentoId { get; set; }
     [JsonIgnore]
     public Equipamento Equipamento { get; set; }
-    */
+    [JsonIgnore]
+    public SucataEquip SucataEquip { get; set; }
 }
