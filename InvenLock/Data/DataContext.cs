@@ -43,6 +43,9 @@ public class DataContext : DbContext
         modelBuilder.Entity<ContatoFuncionario>()
             .HasKey(key => key.FuncionarioId);
         modelBuilder.Entity<ContatoFuncionario>()
+            .Property(cp => cp.CPF)
+            .HasColumnType("varchar(11)");
+        modelBuilder.Entity<ContatoFuncionario>()
             .Property(p => p.Celular)
             .HasColumnType("VARCHAR(11)");
         modelBuilder.Entity<ContatoFuncionario>()
@@ -80,8 +83,8 @@ public class DataContext : DbContext
             .Property(desc => desc.DescEquipamento)
             .HasColumnType("varchar(70)");
         modelBuilder.Entity<Equipamento>()
-            .Property(desc => desc.MarcaEquipamento)
-            .HasColumnType("varchar(20)");
+            .Property(desc => desc.CodigoInterno)
+            .ValueGeneratedOnAdd();
 
         /* ------ FUNCIONARIO ------ */
 
@@ -109,6 +112,9 @@ public class DataContext : DbContext
         modelBuilder.Entity<Funcionario>()
             .Property(bl => bl.Ativo)
                 .HasDefaultValue(true);
+        modelBuilder.Entity<Funcionario>()
+            .Property(n => n.NumOcorrencias)
+            .HasDefaultValue(0);
 
         /* ------ CONSERTOEQUIP ------ */
 
@@ -147,6 +153,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<Ocorrencia>()
             .Property(p => p.MotivoSucata)
             .HasColumnType("varchar(200)");
+        
 
         /* ------ SUCATAEQUIP ------ */
 
@@ -166,8 +173,6 @@ public class DataContext : DbContext
 
         /*DEFININDO CHAVES ESTRANGEIRAS
         */
-        //modelBuilder.Entity<EnderecoFuncionario>()
-          //  .
 
         modelBuilder.Entity<EquipamentoEmprestimo>()
             .HasOne<Equipamento>(one => one.Equipamento)
@@ -187,6 +192,16 @@ public class DataContext : DbContext
         modelBuilder.Entity<SucataEquip>()
             .HasOne<ConsertoEquip>(one => one.ConsertoEquip)
             .WithOne(one => one.SucataEquip)
-                .HasForeignKey<SucataEquip>(fk => fk.ConsertoEquipId);   
+                .HasForeignKey<SucataEquip>(fk => fk.ConsertoEquipId);
+
+        modelBuilder.Entity<ContatoFuncionario>()
+            .HasOne<Funcionario>(one => one.Funcionario)
+            .WithOne(one => one.ContatoFuncionario)
+            .HasForeignKey<ContatoFuncionario>( fkey => fkey.FuncionarioId);
+        
+        modelBuilder.Entity<EnderecoFuncionario>()
+            .HasOne<Funcionario>(one => one.Funcionario)
+            .WithOne(one => one.EnderecoFuncionario)
+            .HasForeignKey<EnderecoFuncionario>(fkey => fkey.FuncionarioId);
     }
 }

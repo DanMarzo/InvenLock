@@ -18,19 +18,23 @@ public class OcorrenciasController : ControllerBase
     {
         try
         {
-            if (ocorrencia.FuncionarioCPF is null)
-                throw new Exception("O campo do CPF do responsável é obrigatório");
-            //A PARTE ABAIXO AINDA ESTA EM ESTE
-            VerificaDados verificar = new();
-            if(!verificar.RecebeCpf(ocorrencia.FuncionarioCPF))
-                throw new Exception("Verifique o CPF");
+            VerificaDados verificar = ocorrencia.FuncionarioCPF is null ?
+                throw new Exception("O campo do CPF do responsável é obrigatório")
+                :new();
 
-            //Ocorrencia funcionarioOcorrencia = await _context.Ocorrencias
-              //  .Include(c => c.)
-                
-            //ocorrencia.FuncionarioId = funcionario.FuncionarioId;
+            ocorrencia.FuncionarioCPF = verificar.ConsertaCpf(ocorrencia.FuncionarioCPF);
+
+
+            Funcionario funBusca = !verificar.RecebeCpf(ocorrencia.FuncionarioCPF) ?
+                throw new Exception("Verifique o CPF")
+                : await _context.Funcionarios
+                .FirstOrDefaultAsync(cpf => cpf.FuncionarioCPF == ocorrencia.FuncionarioCPF);
+
+            if (funBusca is null)
+                return NotFound("Nenhum funcionario cadastrado");
 
             bool aceito = false;
+
             string pk = "";
             while(aceito != true)
             {
@@ -41,7 +45,11 @@ public class OcorrenciasController : ControllerBase
                 else if(chave != null) aceito = false;
             }
             ocorrencia.OcorrenciaId = pk;
+            ocorrencia.FuncionarioCPF = funBusca.FuncionarioCPF;
+            ocorrencia.FuncionarioId = funBusca.FuncionarioId;
+            funBusca.NumOcorrencias++;
 
+            _context.Funcionarios.Update(funBusca);
             await _context.Ocorrencias.AddAsync(ocorrencia);
             await _context.SaveChangesAsync();
 

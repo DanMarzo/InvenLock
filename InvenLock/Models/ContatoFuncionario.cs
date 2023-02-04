@@ -5,10 +5,12 @@ namespace InvenLock.Models;
 
 public class ContatoFuncionario
 {
+    [JsonIgnore]
     [Column(TypeName ="varchar(70)")]
     public string FuncionarioId { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }
+    public string CPF { get; set; }
     public DateTime? DataUltimaAtualizacao { get; set; }
     public string Celular { get; set; }
     public string CelularCorp { get; set; }

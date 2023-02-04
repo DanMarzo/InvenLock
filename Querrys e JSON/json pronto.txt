@@ -1,0 +1,23 @@
+Inserir novo contato
+{
+  "cpf": "56053311839",
+  "celular": "11955008212",
+  "celularCorp": "11978486810",
+  "email": "marzogildan@gmail.com",
+  "emailCorp": "marzogildan@rrsoft.com.br"
+}
+
+Inserir novo funcionario
+{
+  "nomeFuncionario": "Dan",
+  "sobreNomeFuncionario": "Marzo",
+  "funcionarioCPF": "56053311839",
+  "ativo": true,
+  "funcionarioCargo": 1
+}
+
+Desligar ou ativar Funcioario
+{
+  "funcionarioCPF": "56053311839",
+  "ativo": true
+}

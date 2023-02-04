@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("rrsoft"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("dmg"));
 });
 // Add services to the container.
 
@@ -33,6 +33,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/",() => "Bem vindo à InvenLock".ToString());
+app.MapGet("/",() => "Bem vindo à InvenLock - Como esta em desenvolvimento\nPode se notar 'FuncionarioRecebedor' é ambiguo, mas é o CPF, ja fiz muito codigo assim sem querer kkk, depois eu arrumo".ToString());
 
 app.Run();

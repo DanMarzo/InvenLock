@@ -2,7 +2,7 @@ namespace InvenLock.Utils;
 
 public class VerificaDados
 {
-    public string CPF { get; set; }
+    private string CPF { get; set; }
     public bool RecebeCpf(string cpfString)
     {
         cpfString = cpfString.Replace(".","").Replace("-","");
@@ -47,5 +47,8 @@ public class VerificaDados
             return false;
 
     }
-
+    public string ConsertaCpf(string cpfString)
+    {
+        return cpfString.Replace(".", "").Replace("-", "");
+    }
 }

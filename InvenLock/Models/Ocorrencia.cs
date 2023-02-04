@@ -10,7 +10,8 @@ public class Ocorrencia
     [Column(TypeName = "varchar(70)")]
     public string OcorrenciaId { get; set; }
     public string DescOcorrencia { get; set; }
-    public int CodigoInterno { get; set; }
+    public int CodigoInternoEquipamento { get; set; }
+    [JsonIgnore]
     public string FuncionarioId { get; set; }
     public string FuncionarioCPF { get; set; }
     public SituacaoConserto? SituacaoConserto { get; set; }
