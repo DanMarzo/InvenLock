@@ -20,6 +20,14 @@ public class OcorrenciasController : ControllerBase
     {
         try
         {
+            ConsertoEquip consertoOn =
+                await _context.ConsertoEquips
+                .FirstOrDefaultAsync(cod => cod.CodigoInterno == ocorrencia.CodigoInternoEquipamento);
+
+            consertoOn = consertoOn != null ?
+                throw new Exception($"Existe em andamento um Conserto com esse codigo\nOcorrencia: {consertoOn.OcorrenciaId}\nSituação: {consertoOn.SituacaoConserto}")
+                : new();//Cuidado com NULL aqui isso pode dar um Trash no codigo => se não houver o NEW() ele não instancia nada na memoria
+
             VerificaDados verificar = ocorrencia.FuncionarioCPF is null ?
                 throw new Exception("O campo do CPF do responsável é obrigatório")
                 :new();
