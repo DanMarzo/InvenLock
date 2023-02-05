@@ -34,12 +34,11 @@ public class OcorrenciasController : ControllerBase
 
             ocorrencia.FuncionarioCPF = verificar.ConsertaCpf(ocorrencia.FuncionarioCPF);
 
-
             Funcionario funBusca = !verificar.RecebeCpf(ocorrencia.FuncionarioCPF) ?
                 throw new Exception("Verifique o CPF")
                 : await _context.Funcionarios
                 .FirstOrDefaultAsync(cpf => cpf.FuncionarioCPF == ocorrencia.FuncionarioCPF);
-
+            
             if (funBusca is null) return NotFound("Nenhum funcionario cadastrado");
             funBusca.NumOcorrencias++;
 
@@ -80,32 +79,5 @@ public class OcorrenciasController : ControllerBase
             return BadRequest(ex.Message);  
         }
     }
-
-    /*[HttpPost("OcorrenciaAll")]
-    public async Task<IActionResult> FuncionariosOcorrencias(string cpf)
-    {
-        try
-        {
-            VerificaDados verificar = new();
-            if(!verificar.RecebeCpf(cpf))
-                return NotFound("Por favor verifique se o CPF foi digitado corretamente");
-            Ocorrencia ocorrencias = await _context.Ocorrencias
-                .Include(f => f.ConsertoEquip)
-                .Include(f => f.ConsertoEquip.Equipamento)
-                .Include(f => f.ConsertoEquip.Equipamento.Funcionario)
-                .FirstOrDefaultAsync(x => x.FuncionarioId == cpf);
-           
-            if(ocorrencias is null)
-                return NotFound("Nenhum ocorrência com esse CPF foi encontrada!");
-            
-            return Ok(ocorrencias);
-
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-    */
 
 }
