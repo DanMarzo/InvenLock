@@ -64,7 +64,9 @@ public class OcorrenciasController : ControllerBase
             ocorrencia.OcorrenciaId = pk;
             ocorrencia.FuncionarioCPF = funBusca.FuncionarioCPF;
             ocorrencia.FuncionarioId = funBusca.FuncionarioId;
-            funBusca.NumOcorrencias++;
+            consertoOn.OcorrenciaId = pk;
+            consertoOn.EquipamentoId = insertOcorrencia.EquipamentoId;
+            consertoOn.CodigoInterno = insertOcorrencia.CodigoInterno;
 
             _context.Funcionarios.Update(funBusca);
             await _context.Ocorrencias.AddAsync(ocorrencia);
