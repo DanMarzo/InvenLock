@@ -43,6 +43,9 @@ public class OcorrenciasController : ControllerBase
             if (funBusca is null) return NotFound("Nenhum funcionario cadastrado");
             funBusca.NumOcorrencias++;
 
+            Equipamento insertOcorrencia = await _context.Equipamentos
+                    .FirstOrDefaultAsync(id => id.CodigoInterno == ocorrencia.CodigoInternoEquipamento);
+
             if (insertOcorrencia is null) return NotFound("Nenhum equipamento com esse código cadastrado");
 
             insertOcorrencia.SituacaoEquip = SituacaoEquip.Conserto;
