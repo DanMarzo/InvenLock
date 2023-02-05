@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InvenLock.Models.Enums.Equipamento;
 using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
+using System.Collections.Generic;
 
 namespace InvenLock.Controllers;
 
@@ -77,6 +78,40 @@ public class OcorrenciasController : ControllerBase
         catch (Exception ex)
         {
             return BadRequest(ex.Message);  
+        }
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> BuscaOcorrenciaPorId(int id)
+    {
+        return await _context.Ocorrencias
+            .FirstOrDefaultAsync(x => x.CodigoInternoEquipamento == id) is Ocorrencia buscaId ? 
+            Ok(buscaId) 
+            : NotFound($"Equipamento {id} não encontrado");
+    }
+    [HttpPost("BuscaInfoPessoal")]
+    public async Task<IActionResult> BuscaPorCPF(string funCpf)
+    {
+        try
+        {
+            VerificaDados verifica = funCpf is null ?
+                throw new Exception("Campo Obrigatório")
+                : new();
+
+            verifica.ConsertaCpf(funCpf);
+
+            List<Ocorrencia> ocorrencias = !verifica.RecebeCpf(funCpf) ?
+                throw new Exception("Verfique o CPF.")
+                : await _context.Ocorrencias.Where(oc => oc.FuncionarioCPF == funCpf)
+                .ToListAsync();
+
+            return
+                ocorrencias.Count == 0 ? NotFound($"Nada nesse CPF encontrado!")
+                : Ok(ocorrencias);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 
