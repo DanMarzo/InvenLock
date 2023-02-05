@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "o9mV46wSSnfxbPvZs40Q2UhudSRHxmGSY8lenqitroqdUDrpdukJy/BTmvtzVNzGaw3wlsNvV3I/lUYoWYW4/Q==",
+  "dgSpecHash": "neDRkzgNcDySXHinG+5w0ANaFF1AYB24Oav37fKz+FefiMwkd4us6w+qDcwhlK/YAm5YcJvQ9uynHv2ASOX69Q==",
   "success": true,
   "projectFilePath": "D:\\ETEC\\etec2\\DS-I\\InvenLock\\InvenLock\\InvenLock\\InvenLock.csproj",
   "expectedPackageFiles": [
@@ -51,6 +51,7 @@
     "C:\\Users\\DanMarzoGil\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.4.0\\swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512",
     "C:\\Users\\DanMarzoGil\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\DanMarzoGil\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
+    "C:\\Users\\DanMarzoGil\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\DanMarzoGil\\.nuget\\packages\\system.configuration.configurationmanager\\5.0.0\\system.configuration.configurationmanager.5.0.0.nupkg.sha512",
     "C:\\Users\\DanMarzoGil\\.nuget\\packages\\system.diagnostics.diagnosticsource\\5.0.0\\system.diagnostics.diagnosticsource.5.0.0.nupkg.sha512",
     "C:\\Users\\DanMarzoGil\\.nuget\\packages\\system.drawing.common\\5.0.0\\system.drawing.common.5.0.0.nupkg.sha512",
