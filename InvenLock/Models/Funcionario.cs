@@ -24,4 +24,6 @@ public class Funcionario
     public ContatoFuncionario ContatoFuncionario { get; set; }
     [JsonIgnore]
     public EnderecoFuncionario EnderecoFuncionario { get; set; }
+    [JsonIgnore]
+    public ICollection<EquipamentoEmprestimo> EquipamentoEmprestimos { get; set; }
 }
