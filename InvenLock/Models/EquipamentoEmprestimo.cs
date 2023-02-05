@@ -7,7 +7,9 @@ public class EquipamentoEmprestimo
 {
     [Column(TypeName = "varchar(70)")]
     public string FuncionarioId { get; set; }
-    public Funcionario Funcionarios { get; set; }
+    [JsonIgnore]
+    public Funcionario Funcionario { get; set; }
+    public string FuncionarioEntregadorCpf { get; set; }
     public int CodigoInterno { get; set; }
     [JsonIgnore]
     public string EquipamentoId { get; set; }
