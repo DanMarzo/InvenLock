@@ -183,9 +183,6 @@ public class DataContext : DbContext
         
         /* ------ DEFININDO CHAVES ESTRANGEIRAS ------ */
 
-        /*DEFININDO CHAVES ESTRANGEIRAS
-        */
-
         modelBuilder.Entity<EquipamentoEmprestimo>()
             .HasOne<Equipamento>(one => one.Equipamento)
             .WithMany(many => many.EquipamentoEmprestimo)
