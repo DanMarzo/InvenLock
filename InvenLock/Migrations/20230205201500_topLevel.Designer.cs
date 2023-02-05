@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvenLock.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230204222030_top")]
-    partial class top
+    [Migration("20230205201500_topLevel")]
+    partial class topLevel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,11 +33,13 @@ namespace InvenLock.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConsertoEquipId"));
 
-                    b.Property<string>("CodigoInterno")
-                        .IsRequired()
-                        .HasColumnType("varchar(70)");
+                    b.Property<int>("CodigoInterno")
+                        .HasColumnType("int");
 
                     b.Property<string>("EquipamentoId")
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<string>("OcorrenciaId")
                         .HasColumnType("varchar(70)");
 
                     b.Property<string>("Procedimentos")
@@ -52,6 +54,10 @@ namespace InvenLock.Migrations
 
                     b.HasIndex("EquipamentoId");
 
+                    b.HasIndex("OcorrenciaId")
+                        .IsUnique()
+                        .HasFilter("[OcorrenciaId] IS NOT NULL");
+
                     b.ToTable("ConsertoEquips");
                 });
 
@@ -61,7 +67,7 @@ namespace InvenLock.Migrations
                         .HasColumnType("varchar(70)");
 
                     b.Property<string>("CPF")
-                        .HasColumnType("varchar(14)");
+                        .HasColumnType("varchar(11)");
 
                     b.Property<string>("Celular")
                         .HasColumnType("VARCHAR(11)");
@@ -161,23 +167,20 @@ namespace InvenLock.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DataDevolucao")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<DateTime?>("DataEmprestimo")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<string>("EquipamentoId")
                         .HasColumnType("varchar(70)");
 
-                    b.Property<string>("FuncionariosFuncionarioId")
-                        .IsRequired()
-                        .HasColumnType("varchar(70)");
+                    b.Property<string>("FuncionarioEntregadorCpf")
+                        .HasColumnType("VARCHAR(11)");
 
                     b.HasKey("FuncionarioId");
 
                     b.HasIndex("EquipamentoId");
-
-                    b.HasIndex("FuncionariosFuncionarioId");
 
                     b.ToTable("EquipamentoEmprestimos");
                 });
@@ -202,7 +205,7 @@ namespace InvenLock.Migrations
 
                     b.Property<string>("FuncionarioCPF")
                         .IsRequired()
-                        .HasColumnType("varchar(14)");
+                        .HasColumnType("varchar(11)");
 
                     b.Property<int>("FuncionarioCargo")
                         .HasColumnType("int");
@@ -245,7 +248,7 @@ namespace InvenLock.Migrations
                         .HasColumnType("varchar(300)");
 
                     b.Property<string>("FuncionarioCPF")
-                        .HasColumnType("varchar(14)");
+                        .HasColumnType("varchar(11)");
 
                     b.Property<string>("FuncionarioId")
                         .HasColumnType("varchar(70)");
@@ -301,7 +304,13 @@ namespace InvenLock.Migrations
                         .WithMany("ConsertoEquips")
                         .HasForeignKey("EquipamentoId");
 
+                    b.HasOne("InvenLock.Models.Ocorrencia", "Ocorrencia")
+                        .WithOne("ConsertoEquip")
+                        .HasForeignKey("InvenLock.Models.ConsertoEquip", "OcorrenciaId");
+
                     b.Navigation("Equipamento");
+
+                    b.Navigation("Ocorrencia");
                 });
 
             modelBuilder.Entity("InvenLock.Models.ContatoFuncionario", b =>
@@ -332,15 +341,15 @@ namespace InvenLock.Migrations
                         .WithMany("EquipamentoEmprestimo")
                         .HasForeignKey("EquipamentoId");
 
-                    b.HasOne("InvenLock.Models.Funcionario", "Funcionarios")
-                        .WithMany()
-                        .HasForeignKey("FuncionariosFuncionarioId")
+                    b.HasOne("InvenLock.Models.Funcionario", "Funcionario")
+                        .WithMany("EquipamentoEmprestimos")
+                        .HasForeignKey("FuncionarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Equipamento");
 
-                    b.Navigation("Funcionarios");
+                    b.Navigation("Funcionario");
                 });
 
             modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
@@ -381,7 +390,14 @@ namespace InvenLock.Migrations
 
                     b.Navigation("EnderecoFuncionario");
 
+                    b.Navigation("EquipamentoEmprestimos");
+
                     b.Navigation("Ocorrencia");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
+                {
+                    b.Navigation("ConsertoEquip");
                 });
 #pragma warning restore 612, 618
         }

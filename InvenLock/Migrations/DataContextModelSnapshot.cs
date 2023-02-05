@@ -30,11 +30,13 @@ namespace InvenLock.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConsertoEquipId"));
 
-                    b.Property<string>("CodigoInterno")
-                        .IsRequired()
-                        .HasColumnType("varchar(70)");
+                    b.Property<int>("CodigoInterno")
+                        .HasColumnType("int");
 
                     b.Property<string>("EquipamentoId")
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<string>("OcorrenciaId")
                         .HasColumnType("varchar(70)");
 
                     b.Property<string>("Procedimentos")
@@ -48,6 +50,10 @@ namespace InvenLock.Migrations
                     b.HasKey("ConsertoEquipId");
 
                     b.HasIndex("EquipamentoId");
+
+                    b.HasIndex("OcorrenciaId")
+                        .IsUnique()
+                        .HasFilter("[OcorrenciaId] IS NOT NULL");
 
                     b.ToTable("ConsertoEquips");
                 });
@@ -158,23 +164,20 @@ namespace InvenLock.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DataDevolucao")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<DateTime?>("DataEmprestimo")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<string>("EquipamentoId")
                         .HasColumnType("varchar(70)");
 
-                    b.Property<string>("FuncionariosFuncionarioId")
-                        .IsRequired()
-                        .HasColumnType("varchar(70)");
+                    b.Property<string>("FuncionarioEntregadorCpf")
+                        .HasColumnType("VARCHAR(11)");
 
                     b.HasKey("FuncionarioId");
 
                     b.HasIndex("EquipamentoId");
-
-                    b.HasIndex("FuncionariosFuncionarioId");
 
                     b.ToTable("EquipamentoEmprestimos");
                 });
@@ -298,7 +301,13 @@ namespace InvenLock.Migrations
                         .WithMany("ConsertoEquips")
                         .HasForeignKey("EquipamentoId");
 
+                    b.HasOne("InvenLock.Models.Ocorrencia", "Ocorrencia")
+                        .WithOne("ConsertoEquip")
+                        .HasForeignKey("InvenLock.Models.ConsertoEquip", "OcorrenciaId");
+
                     b.Navigation("Equipamento");
+
+                    b.Navigation("Ocorrencia");
                 });
 
             modelBuilder.Entity("InvenLock.Models.ContatoFuncionario", b =>
@@ -329,15 +338,15 @@ namespace InvenLock.Migrations
                         .WithMany("EquipamentoEmprestimo")
                         .HasForeignKey("EquipamentoId");
 
-                    b.HasOne("InvenLock.Models.Funcionario", "Funcionarios")
-                        .WithMany()
-                        .HasForeignKey("FuncionariosFuncionarioId")
+                    b.HasOne("InvenLock.Models.Funcionario", "Funcionario")
+                        .WithMany("EquipamentoEmprestimos")
+                        .HasForeignKey("FuncionarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Equipamento");
 
-                    b.Navigation("Funcionarios");
+                    b.Navigation("Funcionario");
                 });
 
             modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
@@ -378,7 +387,14 @@ namespace InvenLock.Migrations
 
                     b.Navigation("EnderecoFuncionario");
 
+                    b.Navigation("EquipamentoEmprestimos");
+
                     b.Navigation("Ocorrencia");
+                });
+
+            modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
+                {
+                    b.Navigation("ConsertoEquip");
                 });
 #pragma warning restore 612, 618
         }
