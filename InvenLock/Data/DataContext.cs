@@ -181,6 +181,7 @@ public class DataContext : DbContext
             .Property(p => p.FuncionarioEntregadorCpf)
             .HasColumnType("VARCHAR(11)");
         
+        /* ------ DEFININDO CHAVES ESTRANGEIRAS ------ */
 
         /*DEFININDO CHAVES ESTRANGEIRAS
         */
@@ -200,6 +201,11 @@ public class DataContext : DbContext
             .WithMany(many => many.Ocorrencia)
                 .HasForeignKey(fk => fk.FuncionarioId);            
         
+        modelBuilder.Entity<Ocorrencia>()
+            .HasOne<ConsertoEquip>(cse => cse.ConsertoEquip)
+            .WithOne(c => c.Ocorrencia)
+            .HasForeignKey<ConsertoEquip>(fk => fk.OcorrenciaId);
+
         modelBuilder.Entity<Equipamento>()
             .HasMany(many => many.ConsertoEquips)
             .WithOne(one => one.Equipamento)
