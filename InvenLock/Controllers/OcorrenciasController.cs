@@ -70,6 +70,7 @@ public class OcorrenciasController : ControllerBase
 
             await _context.ConsertoEquips.AddAsync(consertoOn);
             await _context.Ocorrencias.AddAsync(ocorrencia);
+            _context.Funcionarios.Update(funBusca);
             await _context.SaveChangesAsync();
 
             return Ok(ocorrencia);
