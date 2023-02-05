@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using InvenLock.Models.Enums.Equipamento;
 using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InvenLock.Controllers;
 
@@ -113,6 +114,17 @@ public class OcorrenciasController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpPost("QuatiaLista")]
+    public async Task<IActionResult> BuscaTudoComParametro(int? quantia)
+    {
+        List<Ocorrencia> lista = quantia is null ?
+            await _context.Ocorrencias.ToListAsync()
+            : await _context.Ocorrencias.Take((int)quantia).ToListAsync();
+        return lista is null ? 
+            NotFound($"Nada encontrado :(")
+            : Ok(lista);
     }
 
 }
