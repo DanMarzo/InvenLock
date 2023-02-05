@@ -52,5 +52,6 @@ public class EquipamentosController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    
 
 }
