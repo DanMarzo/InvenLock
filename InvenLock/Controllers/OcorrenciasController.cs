@@ -68,7 +68,7 @@ public class OcorrenciasController : ControllerBase
             consertoOn.EquipamentoId = insertOcorrencia.EquipamentoId;
             consertoOn.CodigoInterno = insertOcorrencia.CodigoInterno;
 
-            _context.Funcionarios.Update(funBusca);
+            await _context.ConsertoEquips.AddAsync(consertoOn);
             await _context.Ocorrencias.AddAsync(ocorrencia);
             await _context.SaveChangesAsync();
 
