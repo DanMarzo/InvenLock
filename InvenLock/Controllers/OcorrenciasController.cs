@@ -40,8 +40,8 @@ public class OcorrenciasController : ControllerBase
                 : await _context.Funcionarios
                 .FirstOrDefaultAsync(cpf => cpf.FuncionarioCPF == ocorrencia.FuncionarioCPF);
 
-            if (funBusca is null)
-                return NotFound("Nenhum funcionario cadastrado");
+            if (funBusca is null) return NotFound("Nenhum funcionario cadastrado");
+            funBusca.NumOcorrencias++;
 
             if (insertOcorrencia is null) return NotFound("Nenhum equipamento com esse código cadastrado");
 
