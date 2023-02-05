@@ -12,10 +12,10 @@ public class ConsertoEquip
     public int ConsertoEquipId { get; set; }
     public SituacaoConserto? SituacaoConserto { get; set; }
     public string Procedimentos { get; set; }
-
-    [Column(TypeName ="varchar(70)")]
+    public string OcorrenciaId { get; set; }
+    [JsonIgnore]
+    public Ocorrencia Ocorrencia { get; set; }
     public int CodigoInterno { get; set; }
-
     [Column(TypeName = "varchar(70)")]
     public string EquipamentoId { get; set; }
     [JsonIgnore]

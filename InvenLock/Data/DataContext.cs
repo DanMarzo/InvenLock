@@ -180,7 +180,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<EquipamentoEmprestimo>()
             .Property(p => p.FuncionarioEntregadorCpf)
             .HasColumnType("VARCHAR(11)");
-        
+
         /* ------ DEFININDO CHAVES ESTRANGEIRAS ------ */
 
         modelBuilder.Entity<EquipamentoEmprestimo>()
@@ -196,8 +196,8 @@ public class DataContext : DbContext
         modelBuilder.Entity<Ocorrencia>()
             .HasOne<Funcionario>(one => one.Funcionario)
             .WithMany(many => many.Ocorrencia)
-                .HasForeignKey(fk => fk.FuncionarioId);            
-        
+                .HasForeignKey(fk => fk.FuncionarioId);
+
         modelBuilder.Entity<Ocorrencia>()
             .HasOne<ConsertoEquip>(cse => cse.ConsertoEquip)
             .WithOne(c => c.Ocorrencia)
