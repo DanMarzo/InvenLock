@@ -167,8 +167,19 @@ public class DataContext : DbContext
             .HasColumnType("SMALLDATETIME")
             .HasDefaultValueSql("GETDATE()");
 
+        /* ------ EQUIPAMENTOEMPRESTIMO ------ */
+
         modelBuilder.Entity<EquipamentoEmprestimo>()
             .HasKey(key => key.FuncionarioId);
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .Property(p => p.DataDevolucao)
+            .HasColumnType("smalldatetime");
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .Property(p => p.DataEmprestimo)
+            .HasColumnType("smalldatetime");
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .Property(p => p.FuncionarioEntregadorCpf)
+            .HasColumnType("VARCHAR(11)");
         
 
         /*DEFININDO CHAVES ESTRANGEIRAS
@@ -178,6 +189,11 @@ public class DataContext : DbContext
             .HasOne<Equipamento>(one => one.Equipamento)
             .WithMany(many => many.EquipamentoEmprestimo)
                 .HasForeignKey(fk => fk.EquipamentoId);
+
+        modelBuilder.Entity<EquipamentoEmprestimo>()
+            .HasOne<Funcionario>(one => one.Funcionario)
+            .WithMany(many => many.EquipamentoEmprestimos)
+                .HasForeignKey(fk => fk.FuncionarioId);
 
         modelBuilder.Entity<Ocorrencia>()
             .HasOne<Funcionario>(one => one.Funcionario)
