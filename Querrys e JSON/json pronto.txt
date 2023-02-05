@@ -21,3 +21,12 @@ Desligar ou ativar Funcioario
   "funcionarioCPF": "56053311839",
   "ativo": true
 }
+
+Novo Equipamento
+{
+  "situacaoEquip": 1,
+  "tipoEquip": 1,
+  "funcionarioRecebedor": "56053311839",
+  "marcaEquipamento": "Motorola",
+  "descEquipamento": "Novo"
+}
