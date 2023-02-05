@@ -3,6 +3,8 @@ using InvenLock.Models;
 using InvenLock.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using InvenLock.Models.Enums.Equipamento;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 
 namespace InvenLock.Controllers;
 
@@ -32,6 +34,10 @@ public class OcorrenciasController : ControllerBase
 
             if (funBusca is null)
                 return NotFound("Nenhum funcionario cadastrado");
+
+            if (insertOcorrencia is null) return NotFound("Nenhum equipamento com esse código cadastrado");
+
+            insertOcorrencia.SituacaoEquip = SituacaoEquip.Conserto;
 
             bool aceito = false;
 
