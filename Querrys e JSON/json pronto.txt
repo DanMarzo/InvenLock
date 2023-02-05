@@ -30,3 +30,10 @@ Novo Equipamento
   "marcaEquipamento": "Motorola",
   "descEquipamento": "Novo"
 }
+Nova ocorrencia
+{
+  "descOcorrencia": "string",
+  "codigoInternoEquipamento": 5,
+  "funcionarioCPF": "56053311839",
+  "situacaoConserto": 1
+}
