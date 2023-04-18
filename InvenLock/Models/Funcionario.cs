@@ -7,23 +7,22 @@ namespace InvenLock.Models;
 
 public class Funcionario
 {
-    [JsonIgnore]
-    [Column(TypeName = "varchar(70)")]
-    public string FuncionarioId { get; set; }   
-    public string NomeFuncionario { get; set; }
-    public string SobreNomeFuncionario { get; set; }
-    public string FuncionarioCPF { get; set; }
+    public int FuncionarioId { get; set; }   
+    public string Nome { get; set; }
+    public string Sobrenome { get; set; }
+    public string CPF { get; set; }
     public int NumOcorrencias { get; set; }
-    public DateTime? DataAdmissao { get; set; }
-    public DateTime? DataDemissao { get; set; }
-    public bool? Ativo { get; set; }
+    public DateTime? Admissao { get; set; }
+    public DateTime? Demissao { get; set; }
+    public bool? Status { get; set; }
+    [NotMapped]
+    public string PwdString { get; set; }
+    public byte[] Pwdhash { get; set; }
+    public byte[] Pwdsalt { get; set; }
+
     public FuncionarioCargo FuncionarioCargo { get; set; }
-    [JsonIgnore]
     public ICollection<Ocorrencia> Ocorrencia { get; set; }
-    [JsonIgnore]
     public ContatoFuncionario ContatoFuncionario { get; set; }
-    [JsonIgnore]
     public EnderecoFuncionario EnderecoFuncionario { get; set; }
-    [JsonIgnore]
     public ICollection<EquipamentoEmprestimo> EquipamentoEmprestimos { get; set; }
 }

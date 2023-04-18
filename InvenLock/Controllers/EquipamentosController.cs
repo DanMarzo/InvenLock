@@ -26,10 +26,10 @@ public class EquipamentosController : ControllerBase
 
             Funcionario existeFunc = !verifica.RecebeCpf(equipamento.FuncionarioRecebedor) ?
                 throw new Exception("Verifique o CPF")
-                : await _context.Funcionarios.FirstOrDefaultAsync(x => x.FuncionarioCPF == equipamento.FuncionarioRecebedor);
+                : await _context.Funcionarios.FirstOrDefaultAsync(x => x.CPF == equipamento.FuncionarioRecebedor);
 
             if (existeFunc is null) return NotFound("Funcionario não cadastrado na empresa");
-            if (existeFunc.Ativo is false) throw new Exception("Funcionario está inativo");
+            if (existeFunc.Status is false) throw new Exception("Funcionario está inativo");
 
             bool aceito = false;
             string pk = "";

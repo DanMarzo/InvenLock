@@ -4,6 +4,7 @@ using InvenLock.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvenLock.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230418020556_Consertos")]
+    partial class Consertos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,25 +80,12 @@ namespace InvenLock.Migrations
 
                     b.Property<DateTime?>("UltimaAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2(0)")
+                        .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("FuncionarioId");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
-
                     b.ToTable("ContatoFuncionarios");
-
-                    b.HasData(
-                        new
-                        {
-                            FuncionarioId = 1,
-                            Email = "marzogildan@gmail.com",
-                            EmailCorp = "marzogildan@rrsoft.com.br",
-                            UltimaAtualizacao = new DateTime(2023, 4, 17, 23, 23, 49, 538, DateTimeKind.Local).AddTicks(5109)
-                        });
                 });
 
             modelBuilder.Entity("InvenLock.Models.EnderecoFuncionario", b =>
@@ -108,7 +98,7 @@ namespace InvenLock.Migrations
 
                     b.Property<DateTime?>("DataUltimaAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2(0)")
+                        .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("FuncionarioCEP")
@@ -138,7 +128,7 @@ namespace InvenLock.Migrations
 
                     b.Property<DateTime?>("DataEntrega")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2(0)")
+                        .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("DescEquipamento")
@@ -174,10 +164,10 @@ namespace InvenLock.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DataDevolucao")
-                        .HasColumnType("datetime2(0)");
+                        .HasColumnType("DATETIME");
 
                     b.Property<DateTime?>("DataEmprestimo")
-                        .HasColumnType("datetime2(0)");
+                        .HasColumnType("DATETIME");
 
                     b.Property<string>("EquipamentoId")
                         .HasColumnType("varchar(70)");
@@ -202,7 +192,7 @@ namespace InvenLock.Migrations
 
                     b.Property<DateTime?>("Admissao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2(0)")
+                        .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("CPF")
@@ -210,7 +200,7 @@ namespace InvenLock.Migrations
                         .HasColumnType("varchar(11)");
 
                     b.Property<DateTime?>("Demissao")
-                        .HasColumnType("datetime2(0)");
+                        .HasColumnType("DATETIME");
 
                     b.Property<int>("FuncionarioCargo")
                         .HasColumnType("int");
@@ -223,12 +213,6 @@ namespace InvenLock.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
-
-                    b.Property<byte[]>("Pwdhash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("Pwdsalt")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Sobrenome")
                         .IsRequired()
@@ -243,21 +227,6 @@ namespace InvenLock.Migrations
                         .HasName("PK_FuncionarioId");
 
                     b.ToTable("Funcionarios");
-
-                    b.HasData(
-                        new
-                        {
-                            FuncionarioId = 1,
-                            Admissao = new DateTime(2023, 4, 17, 23, 23, 49, 539, DateTimeKind.Local).AddTicks(1871),
-                            CPF = "56053311839",
-                            FuncionarioCargo = 2,
-                            Nome = "Dan",
-                            NumOcorrencias = 0,
-                            Pwdhash = new byte[] { 180, 14, 98, 247, 116, 23, 208, 85, 255, 49, 35, 69, 173, 47, 35, 86, 133, 190, 49, 218, 238, 87, 199, 102, 59, 203, 124, 216, 245, 245, 141, 108, 191, 17, 44, 94, 97, 20, 5, 164, 159, 53, 165, 94, 134, 133, 6, 35, 174, 248, 66, 77, 147, 234, 176, 190, 146, 210, 208, 83, 38, 20, 136, 96, 163, 181, 148, 245, 40, 18, 197, 18, 170, 157, 19, 215, 160, 207, 250, 101, 41, 88, 32, 26, 212, 86, 162, 32, 46, 167, 75, 206, 37, 41, 81, 209, 231, 192, 105, 7, 113, 59, 35, 23, 253, 215, 242, 30, 61, 83, 24, 188, 174, 70, 3, 115, 84, 8, 36, 241, 228, 54, 67, 174, 54, 182, 139, 8 },
-                            Pwdsalt = new byte[] { 4, 89, 133, 170, 78, 123, 28, 16, 11, 179, 15, 185, 57, 99, 254, 12, 138, 229, 39, 45, 91, 1, 213, 100, 61, 163, 160, 86, 104, 226, 51, 62, 222, 204, 85, 150, 76, 251, 138, 226, 135, 166, 44, 212, 134, 52, 91, 26, 244, 111, 127, 95, 5, 242, 67, 65, 167, 34, 219, 228, 30, 203, 89, 94 },
-                            Sobrenome = "marzo",
-                            Status = true
-                        });
                 });
 
             modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
@@ -269,11 +238,11 @@ namespace InvenLock.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DataFimOcorrencia")
-                        .HasColumnType("datetime2(0)");
+                        .HasColumnType("DATETIME");
 
                     b.Property<DateTime?>("DataOcorrencia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2(0)")
+                        .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("DescOcorrencia")
@@ -316,7 +285,7 @@ namespace InvenLock.Migrations
 
                     b.Property<DateTime>("DataDescarte")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2(0)")
+                        .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("MotivoSucata")

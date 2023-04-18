@@ -12,7 +12,7 @@ public class Ocorrencia
     public string DescOcorrencia { get; set; }
     public int CodigoInternoEquipamento { get; set; }
     [JsonIgnore]
-    public string FuncionarioId { get; set; }
+    public int FuncionarioId { get; set; }
     public string FuncionarioCPF { get; set; }
     public SituacaoConserto? SituacaoConserto { get; set; }
     public string MotivoSucata { get; set; }

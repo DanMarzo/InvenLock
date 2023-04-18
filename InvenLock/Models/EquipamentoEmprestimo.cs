@@ -5,8 +5,7 @@ namespace InvenLock.Models;
 
 public class EquipamentoEmprestimo
 {
-    [Column(TypeName = "varchar(70)")]
-    public string FuncionarioId { get; set; }
+    public int FuncionarioId { get; set; }
     [JsonIgnore]
     public Funcionario Funcionario { get; set; }
     public string FuncionarioEntregadorCpf { get; set; }

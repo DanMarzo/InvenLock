@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvenLock.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230205201500_topLevel")]
-    partial class topLevel
+    [Migration("20230418022349_includeDefaultValuestwo")]
+    partial class includeDefaultValuestwo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,11 +63,8 @@ namespace InvenLock.Migrations
 
             modelBuilder.Entity("InvenLock.Models.ContatoFuncionario", b =>
                 {
-                    b.Property<string>("FuncionarioId")
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<string>("CPF")
-                        .HasColumnType("varchar(11)");
+                    b.Property<int>("FuncionarioId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Celular")
                         .HasColumnType("VARCHAR(11)");
@@ -75,33 +72,46 @@ namespace InvenLock.Migrations
                     b.Property<string>("CelularCorp")
                         .HasColumnType("VARCHAR(11)");
 
-                    b.Property<DateTime?>("DataUltimaAtualizacao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smalldatetime")
-                        .HasDefaultValueSql("GETDATE()");
-
                     b.Property<string>("Email")
                         .HasColumnType("VARCHAR(70)");
 
                     b.Property<string>("EmailCorp")
                         .HasColumnType("VARCHAR(70)");
 
+                    b.Property<DateTime?>("UltimaAtualizacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2(0)")
+                        .HasDefaultValueSql("GETDATE()");
+
                     b.HasKey("FuncionarioId");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
                     b.ToTable("ContatoFuncionarios");
+
+                    b.HasData(
+                        new
+                        {
+                            FuncionarioId = 1,
+                            Email = "marzogildan@gmail.com",
+                            EmailCorp = "marzogildan@rrsoft.com.br",
+                            UltimaAtualizacao = new DateTime(2023, 4, 17, 23, 23, 49, 538, DateTimeKind.Local).AddTicks(5109)
+                        });
                 });
 
             modelBuilder.Entity("InvenLock.Models.EnderecoFuncionario", b =>
                 {
-                    b.Property<string>("FuncionarioId")
-                        .HasColumnType("varchar(70)");
+                    b.Property<int>("FuncionarioId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Complemento")
                         .HasColumnType("VARCHAR(250)");
 
                     b.Property<DateTime?>("DataUltimaAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smalldatetime")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("FuncionarioCEP")
@@ -131,7 +141,7 @@ namespace InvenLock.Migrations
 
                     b.Property<DateTime?>("DataEntrega")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smalldatetime")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("DescEquipamento")
@@ -160,17 +170,17 @@ namespace InvenLock.Migrations
 
             modelBuilder.Entity("InvenLock.Models.EquipamentoEmprestimo", b =>
                 {
-                    b.Property<string>("FuncionarioId")
-                        .HasColumnType("varchar(70)");
+                    b.Property<int>("FuncionarioId")
+                        .HasColumnType("int");
 
                     b.Property<int>("CodigoInterno")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DataDevolucao")
-                        .HasColumnType("smalldatetime");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<DateTime?>("DataEmprestimo")
-                        .HasColumnType("smalldatetime");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("EquipamentoId")
                         .HasColumnType("varchar(70)");
@@ -187,30 +197,28 @@ namespace InvenLock.Migrations
 
             modelBuilder.Entity("InvenLock.Models.Funcionario", b =>
                 {
-                    b.Property<string>("FuncionarioId")
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<bool?>("Ativo")
+                    b.Property<int>("FuncionarioId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("DataAdmissao")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FuncionarioId"));
+
+                    b.Property<DateTime?>("Admissao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smalldatetime")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<DateTime?>("DataDemissao")
-                        .HasColumnType("smalldatetime");
-
-                    b.Property<string>("FuncionarioCPF")
+                    b.Property<string>("CPF")
                         .IsRequired()
                         .HasColumnType("varchar(11)");
+
+                    b.Property<DateTime?>("Demissao")
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<int>("FuncionarioCargo")
                         .HasColumnType("int");
 
-                    b.Property<string>("NomeFuncionario")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(40)");
 
@@ -219,13 +227,40 @@ namespace InvenLock.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<string>("SobreNomeFuncionario")
+                    b.Property<byte[]>("Pwdhash")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("Pwdsalt")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Sobrenome")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.HasKey("FuncionarioId");
+                    b.Property<bool?>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.HasKey("FuncionarioId")
+                        .HasName("PK_FuncionarioId");
 
                     b.ToTable("Funcionarios");
+
+                    b.HasData(
+                        new
+                        {
+                            FuncionarioId = 1,
+                            Admissao = new DateTime(2023, 4, 17, 23, 23, 49, 539, DateTimeKind.Local).AddTicks(1871),
+                            CPF = "56053311839",
+                            FuncionarioCargo = 2,
+                            Nome = "Dan",
+                            NumOcorrencias = 0,
+                            Pwdhash = new byte[] { 180, 14, 98, 247, 116, 23, 208, 85, 255, 49, 35, 69, 173, 47, 35, 86, 133, 190, 49, 218, 238, 87, 199, 102, 59, 203, 124, 216, 245, 245, 141, 108, 191, 17, 44, 94, 97, 20, 5, 164, 159, 53, 165, 94, 134, 133, 6, 35, 174, 248, 66, 77, 147, 234, 176, 190, 146, 210, 208, 83, 38, 20, 136, 96, 163, 181, 148, 245, 40, 18, 197, 18, 170, 157, 19, 215, 160, 207, 250, 101, 41, 88, 32, 26, 212, 86, 162, 32, 46, 167, 75, 206, 37, 41, 81, 209, 231, 192, 105, 7, 113, 59, 35, 23, 253, 215, 242, 30, 61, 83, 24, 188, 174, 70, 3, 115, 84, 8, 36, 241, 228, 54, 67, 174, 54, 182, 139, 8 },
+                            Pwdsalt = new byte[] { 4, 89, 133, 170, 78, 123, 28, 16, 11, 179, 15, 185, 57, 99, 254, 12, 138, 229, 39, 45, 91, 1, 213, 100, 61, 163, 160, 86, 104, 226, 51, 62, 222, 204, 85, 150, 76, 251, 138, 226, 135, 166, 44, 212, 134, 52, 91, 26, 244, 111, 127, 95, 5, 242, 67, 65, 167, 34, 219, 228, 30, 203, 89, 94 },
+                            Sobrenome = "marzo",
+                            Status = true
+                        });
                 });
 
             modelBuilder.Entity("InvenLock.Models.Ocorrencia", b =>
@@ -237,11 +272,11 @@ namespace InvenLock.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DataFimOcorrencia")
-                        .HasColumnType("smalldatetime");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<DateTime?>("DataOcorrencia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smalldatetime")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("DescOcorrencia")
@@ -250,8 +285,8 @@ namespace InvenLock.Migrations
                     b.Property<string>("FuncionarioCPF")
                         .HasColumnType("varchar(11)");
 
-                    b.Property<string>("FuncionarioId")
-                        .HasColumnType("varchar(70)");
+                    b.Property<int>("FuncionarioId")
+                        .HasColumnType("int");
 
                     b.Property<string>("MotivoSucata")
                         .HasColumnType("varchar(200)");
@@ -284,7 +319,7 @@ namespace InvenLock.Migrations
 
                     b.Property<DateTime>("DataDescarte")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("SMALLDATETIME")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("MotivoSucata")
@@ -319,7 +354,8 @@ namespace InvenLock.Migrations
                         .WithOne("ContatoFuncionario")
                         .HasForeignKey("InvenLock.Models.ContatoFuncionario", "FuncionarioId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("PK_ContatoFuncionario_Funcionario");
 
                     b.Navigation("Funcionario");
                 });
@@ -356,7 +392,9 @@ namespace InvenLock.Migrations
                 {
                     b.HasOne("InvenLock.Models.Funcionario", "Funcionario")
                         .WithMany("Ocorrencia")
-                        .HasForeignKey("FuncionarioId");
+                        .HasForeignKey("FuncionarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Funcionario");
                 });
